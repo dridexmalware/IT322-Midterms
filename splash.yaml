@@ -1,0 +1,14 @@
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#196DFF"
+  image: assets/icons/lawod-blue.png
+  image_dark: assets/icons/lawod-white.png
+
+  android_12:
+    color: "#FFFFFF"
+    color_dark: "#196DFF"
+    image: assets/icons/lawod-blue.png
+    image_dark: assets/icons/lawod-white.png
+
+  web: false
+
