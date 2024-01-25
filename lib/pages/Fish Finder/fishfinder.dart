@@ -9,8 +9,9 @@ Future<void> main() async {
 }
 
 class FishFinder extends StatelessWidget {
-  const FishFinder ({super.key});
+  const FishFinder({super.key});
 
+  late CameraController _controller;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
