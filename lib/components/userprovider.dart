@@ -1,4 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class UserData extends ChangeNotifier {
+  String? firstName;
+  String? lastName;
+
+
+  readData (String firstname, String lastname ) async{
+    firstName = firstname;
+    lastName = lastname;
+    await Supabase.instance.client
+        .from('useracc')
+        .select()
+        .eq('firstname', firstName as Object)
+        .eq('lastname', lastName as Object);
+        notifyListeners();
+  }
+}
+
 
 class UserProvider extends ChangeNotifier {
   String userName;

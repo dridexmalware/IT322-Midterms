@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lawod/components/userprovider.dart';
-import 'package:provider/provider.dart';
-import 'user_name.dart';
-import 'username_fullname.dart';
-import 'user_email.dart';
-import 'user_password.dart';
-import 'user_phone.dart';
+import 'package:lawod/main.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_email.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_name.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_password.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_phone.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/username_fullname.dart';
 
 class UserInfo extends StatefulWidget {
   const UserInfo({super.key});
@@ -15,6 +14,37 @@ class UserInfo extends StatefulWidget {
 }
 
 class _UserInfoState extends State<UserInfo> {
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+ Future<void> fetchUserData() async {
+  final user = supabase.auth.currentUser;
+
+  if (user != null) {
+    final response = await supabase
+        .from('useracc')
+        .select()
+        .eq('email', user.email as Object)
+        .single();
+
+    // ignore: unnecessary_null_comparison
+    if (response != null && response != null) {
+      setState(() {
+        userData = response;
+      });
+
+      // Print the user data for debugging
+      // ignore: avoid_print
+      print('User Data: $userData');
+    }
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,25 +98,23 @@ class _UserInfoState extends State<UserInfo> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInfoRow('Username',
-                      context.watch<UserProvider>().userName, const UserName()),
+                  _buildInfoRow(
+                      'Username', userData?['username'] ?? 'N/A', const UserName()),
                   const SizedBox(height: 25),
                   _buildInfoRow(
                       'Full Name',
-                      '${context.watch<UserProvider>().firstName} ${context.watch<UserProvider>().lastName}',
+                      '${userData?['firstname']} ${userData?['lastname']}',
                       const UserFullName()),
                   const SizedBox(height: 25),
-                  _buildInfoRow('Email',
-                      context.watch<UserProvider>().email, const UserEmail()),
+                  _buildInfoRow(
+                      'Email', userData?['email'] ?? 'N/A', const UserEmail()),
                   const SizedBox(height: 25),
                   _buildInfoRow('Phone Number',
-                      context.watch<UserProvider>().phoneNumber, const UserPhoneNumber()),
+                      userData?['phonenumber'] ?? 'N/A', const UserPhoneNumber()),
                   const SizedBox(height: 25),
-                  _buildInfoRow('Password',
-                      context.watch<UserProvider>().password, const UserPassword()),
+                  _buildInfoRow(
+                      'Password', userData?['password'] ?? 'N/A', const UserPassword()),
                   const SizedBox(height: 25),
-                  _buildInfoRow('Account Type',
-                      context.watch<UserProvider>().userName, const UserName()),
                 ],
               ),
             ),
@@ -98,8 +126,7 @@ class _UserInfoState extends State<UserInfo> {
 
   Widget _buildInfoRow(String label, String value, Widget destination) {
     if (label == 'Full Name') {
-      value =
-          '${context.watch<UserProvider>().firstName} ${context.watch<UserProvider>().lastName}';
+      value = '${userData?['firstname']} ${userData?['lastname']}';
     }
 
     return GestureDetector(

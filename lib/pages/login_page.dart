@@ -8,7 +8,7 @@
   class LoginPage extends StatelessWidget {
     LoginPage({super.key});
 
-    final usernameController = TextEditingController();
+    final emailController = TextEditingController();
     final passwordController = TextEditingController();
 
     @override
@@ -32,8 +32,8 @@
                     height: 60,
                   ),
                   LawodTextField(
-                    controller: usernameController,
-                    hintText: 'Username',
+                    controller: emailController,
+                    hintText: 'Email',
                     obscureText: false,
                   ),
                   const SizedBox(
@@ -49,22 +49,17 @@
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      final username = usernameController.text;
+                      final email = emailController.text;
                       final password = passwordController.text;
 
-                      if (username.isEmpty || password.isEmpty) {
+                      if (email.isEmpty || password.isEmpty) {
                         return;
                       }
 
-                      final supabase = SupabaseClient(
-                        "https://jygarouldipjiciutnlg.supabase.co",
-                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5Z2Fyb3VsZGlwamljaXV0bmxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDYyMDA4NzcsImV4cCI6MjAyMTc3Njg3N30.-bxjnhydAnslNGGAtkZ3DLXUyDXiIVISeWCE13MaGBA",
-                      );
-
-                      final response = await supabase
+                      final response = await Supabase.instance.client
                           .from('useracc')
                           .select()
-                          .eq('username', username)
+                          .eq('email', email)
                           .eq('password', password);
 
                       // ignore: unnecessary_null_comparison
@@ -77,10 +72,8 @@
                           ),
                         );
                       } else {
-                        // Show an error message or take any other appropriate action
-                        // For now, you can print a message to the console
                         if (kDebugMode) {
-                          print('Invalid username or password');
+                          print('Invalid email or password');
                         }
                       }
                     },

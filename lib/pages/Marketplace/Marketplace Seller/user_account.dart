@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lawod/components/userprovider.dart';
+import 'package:lawod/main.dart';
 import 'package:provider/provider.dart';
 import 'user_info.dart';
 
@@ -14,126 +15,150 @@ class _UserAccountState extends State<UserAccount> {
   String userName =
       'Gaga’s Fish Market'; // Example username, replace with your dynamic data
 
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+ Future<void> fetchUserData() async {
+  final user = supabase.auth.currentUser;
+
+  if (user != null) {
+    final response = await supabase
+        .from('useracc')
+        .select()
+        .eq('email', user.email as Object)
+        .single();
+
+    // ignore: unnecessary_null_comparison
+    if (response != null && response != null) {
+      setState(() {
+        userData = response;
+      });
+
+      // Print the user data for debugging
+      // ignore: avoid_print
+      print('User Data: $userData');
+    }
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     final double avatarRadius = 65.0;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
-          icon: const Icon(Icons.arrow_back_ios, size: 20.0),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          color: const Color.fromRGBO(79, 79, 79, 1),
-        ),
-        titleSpacing: 0,
-        title: const Text(
-          'Categories',
-          style: TextStyle(
-            color: Color.fromRGBO(25, 109, 255, 1),
-            fontFamily: 'Proxima',
-            fontWeight: FontWeight.w700,
-            fontSize: 34,
+        backgroundColor: const Color(0xFF196DFF),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: const IconThemeData(size: 20.0),
+          leading: IconButton(
+            padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+            color: Colors.white,
           ),
         ),
-        actions: [
-          IconButton(
-            padding: const EdgeInsets.only(top: 5, right: 15, bottom: 5),
-            onPressed: () {},
-            icon: Image.asset(
-              'assets/images/marketplace/user/cartlogo.png',
-              width: 24.0,
-              height: 24.0,
+        extendBodyBehindAppBar: true,
+        body: SingleChildScrollView(
+          child: Stack(children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/marketplace/background.png',
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Column(
+            Stack(
+              alignment: Alignment.topCenter,
               children: [
-                SizedBox(height: avatarRadius * 2),
-                Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.24,
+                      width: MediaQuery.of(context).size.width,
                     ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 80.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          '${context.watch<UserProvider>().firstName} ${context.watch<UserProvider>().lastName}',
-                          style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF196DFF)),
+                    Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          userName,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Color(0xFF4F4F4F),
-                            fontSize: 20,
-                            fontFamily: 'Proxima Nova',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        GridView.count(
-                          shrinkWrap: true,
-                          primary: false,
-                          padding: const EdgeInsets.all(20),
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          crossAxisCount: 2,
-                          children: <Widget>[
-                            _buildCard(context, 'Orders',
-                                'assets/images/marketplaceseller/orders.png'),
-                            _buildCard(context, 'Account Information',
-                                'assets/images/marketplaceseller/accountInfo.png'),
-                            _buildCard(context, 'Policy',
-                                'assets/images/marketplaceseller/policy.png'),
-                            _buildCard(context, 'Help',
-                                'assets/images/marketplaceseller/help.png'),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 80.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              '${userData?['firstname']} ${userData?['lastname']}',
+                              style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF196DFF)),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              userName,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color(0xFF4F4F4F),
+                                fontSize: 20,
+                                fontFamily: 'Proxima Nova',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+                            GridView.count(
+                              shrinkWrap: true,
+                              primary: false,
+                              padding: const EdgeInsets.all(20),
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              crossAxisCount: 2,
+                              children: <Widget>[
+                                _buildCard(context, 'Orders',
+                                    'assets/images/marketplaceseller/orders.png'),
+                                _buildCard(context, 'Account Information',
+                                    'assets/images/marketplaceseller/accountInfo.png'),
+                                _buildCard(context, 'Policy',
+                                    'assets/images/marketplaceseller/policy.png'),
+                                _buildCard(context, 'Help',
+                                    'assets/images/marketplaceseller/help.png'),
+                              ],
+                            ),
+                            const SizedBox(
+                                height: 20), // Additional space at the bottom
                           ],
                         ),
-                        const SizedBox(
-                            height: 20), // Additional space at the bottom
-                      ],
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: MediaQuery.of(context).size.height *
+                      0.16, // Adjusted for the screen size
+                  child: CircleAvatar(
+                    radius: avatarRadius,
+                    backgroundColor: Colors.white,
+                    child: CircleAvatar(
+                      radius: avatarRadius - 5, // Small white border
+                      backgroundImage: const NetworkImage(
+                        'https://drive.google.com/uc?export=view&id=1Dc-e2GPOpqWgumRNt8kLVp6b_ztKI2yw',
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-            Positioned(
-              top: MediaQuery.of(context).size.height *
-                  0.12, // Adjusted for the screen size
-              child: CircleAvatar(
-                radius: avatarRadius,
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  radius: avatarRadius - 5, // Small white border
-                  backgroundImage: const NetworkImage(
-                    'https://drive.google.com/uc?export=view&id=1Dc-e2GPOpqWgumRNt8kLVp6b_ztKI2yw',
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+          ]),
+        ));
   }
 
   Widget _buildCard(BuildContext context, String title, String imagePath) {

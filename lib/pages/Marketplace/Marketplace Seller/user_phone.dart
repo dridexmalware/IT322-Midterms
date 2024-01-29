@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lawod/components/userprovider.dart';
+import 'package:lawod/main.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_info.dart';
-import 'package:provider/provider.dart';
 
 class UserPhoneNumber extends StatefulWidget {
   const UserPhoneNumber({super.key});
@@ -14,18 +13,61 @@ class _UserPhoneNumber extends State<UserPhoneNumber> {
   final newUserPhoneNumberController = TextEditingController();
   final confirmUserPhoneNumberController = TextEditingController();
 
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    final user = supabase.auth.currentUser;
+
+    if (user != null) {
+      final response = await supabase
+          .from('useracc')
+          .select()
+          .eq('email', user.email as Object)
+          .single();
+
+      // ignore: unnecessary_null_comparison
+      if (response != null && response != null) {
+        setState(() {
+          userData = response;
+        });
+
+        // Print the user data for debugging
+        // ignore: avoid_print
+        print('User Data: $userData');
+      }
+    }
+  }
+
+  Future<void> updateUserData(String newUserPhoneNumber) async {
+    final user = supabase.auth.currentUser;
+
+    if (user != null) {
+      await supabase
+          .from('useracc')
+          .update({'phonenumber': newUserPhoneNumber})
+          .eq('email', user.email as Object)
+          .single();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme:
-            const IconThemeData(color: Color(0xFF4F4F4F)),
+        iconTheme: const IconThemeData(color: Color(0xFF4F4F4F)),
         title: const Text(
           'Phone Number',
           style: TextStyle(
-              color: Color(0xFF196DFF),
-              fontWeight: FontWeight.bold),
+            color: Color(0xFF196DFF),
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -41,11 +83,12 @@ class _UserPhoneNumber extends State<UserPhoneNumber> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  context.watch<UserProvider>().phoneNumber,
+                  userData?['phonenumber'] ?? 'N/A',
                   style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF196DFF)),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF196DFF),
+                  ),
                 ),
                 const SizedBox(height: 64),
                 TextFormField(
@@ -72,25 +115,27 @@ class _UserPhoneNumber extends State<UserPhoneNumber> {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color(0xFF196DFF),
+                      backgroundColor: const Color(0xFF196DFF),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                     ),
                     onPressed: () {
-                      context.read<UserProvider>().changePhoneNumber(
-                          newPhoneNumber: newUserPhoneNumberController.text);
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      newUserPhoneNumberController.clear();
-                      context.read<UserProvider>().changePhoneNumber(
-                          newPhoneNumber: confirmUserPhoneNumberController.text);
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      confirmUserPhoneNumberController.clear();
+                      String newUserPhoneNumber = newUserPhoneNumberController.text;
+                      String confirmUserPhoneNumber = confirmUserPhoneNumberController.text;
+
+                      if (newUserPhoneNumber != confirmUserPhoneNumber) {
+                        // Handle UserPhoneNumber mismatch error
+                        return;
+                      }
+
+                      updateUserData(newUserPhoneNumber);
+
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const UserInfo()),
+                        MaterialPageRoute(
+                            builder: (context) => const UserInfo()),
                       );
                     },
                     child: const Padding(
