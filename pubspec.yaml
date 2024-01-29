@@ -25,17 +25,21 @@ dependencies:
   lottie: ^3.0.0
   geolocator: ^10.1.0
   weather_icons: ^3.0.0
-  tflite_flutter: ^0.10.4
-  tflite: ^1.0.7
   permission_handler: ^11.2.0
   get: ^4.6.6
+  image_picker: ^1.0.7
+  curved_navigation_bar: ^1.0.3
+  supabase_flutter: ^2.3.1
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  sqflite: ^2.3.1
 
 flutter_icons:
   android: true
   ios: true
   image_path: "assets/logos/logo.png"
 
-  # Icons
+  # Icons 
   cupertino_icons: ^1.0.2
 
   # State Management
@@ -60,10 +64,70 @@ flutter:
 
   #---------- LOCAL ASSETS ----------#
   assets:
-    - assets/images/
-    - assets/logos/
-    - assets/icons/
-    -
+     - assets/images/
+     - assets/logos/
+     - assets/icons/
+     - assets/images/marketplace/background.png
+     - assets/images/marketplace/marketplace.png
+     - assets/images/marketplace/user/cartlogo.png
+     - assets/images/marketplace/user/bottomNav/accountbtn.png
+     - assets/images/marketplace/user/bottomNav/marketplacebtn.png
+     - assets/images/marketplace/user/bottomNav/communitybtn.png
+     - assets/images/marketplace/user/categories/electronics.png
+     - assets/images/marketplace/user/categories/equipment.png
+     - assets/images/marketplace/user/categories/fish.png
+     - assets/images/marketplace/user/categories/gears.png
+     - assets/images/marketplace/user/categories/processed.png
+     - assets/images/marketplace/user/categories/shellfish.png
+     - assets/images/marketplace/user/fish/bangus.png
+     - assets/images/marketplace/user/fish/bodboron.png
+     - assets/images/marketplace/user/fish/bulinaw.png
+     - assets/images/marketplace/user/fish/tangigue.png
+     - assets/images/marketplace/user/fish/tilapia.png
+     - assets/images/marketplace/user/fish/tuna.png
+     - assets/images/marketplace/user/cart.png
+     - assets/images/marketplace/user/check.png
+     - assets/images/marketplace/user/item/chat.png
+     - assets/images/marketplace/user/item/profile.png
+     - assets/images/marketplace/user/item/cart.png
+     - assets/images/marketplace/user/tracking/motor.png
+     - assets/images/marketplace/user/credit/takeaphoto.png
+
+
+     - assets/images/communitysupport/background.png
+     - assets/images/communitysupport/Vectorcommunity.png
+     - assets/images/communitysupport/bottomNav/accountbtn.png
+     - assets/images/communitysupport/bottomNav/marketplacebtn.png
+     - assets/images/communitysupport/bottomNav/communitybtn.png
+     - assets/images/communitysupport/newsfeed/news1.png
+     - assets/images/communitysupport/newsfeed/news2.png
+     - assets/images/communitysupport/newsfeed/news3.png
+     - assets/images/communitysupport/newsfeed/news4.png
+     - assets/images/communitysupport/newsfeed/news5.png
+     - assets/images/communitysupport/communitylogo/BFAR.png
+     - assets/images/communitysupport/communitylogo/PAMALAKAYA.png
+     - assets/images/communitysupport/communitylogo/APOO.png
+     - assets/images/communitysupport/communitylogo/LGUalub.png
+     - assets/images/communitysupport/communitylogo/LGUelsal.png
+     - assets/images/communitysupport/communitylogo/LGUopol.png
+     - assets/images/communitysupport/newsassets/comment.png
+     - assets/images/communitysupport/newsassets/like.png
+     - assets/images/communitysupport/newsassets/message.png
+     - assets/images/communitysupport/createpost/Photo.png
+     - assets/images/communitysupport/createpost/Live video.png
+     - assets/images/communitysupport/createpost/Camera.png
+     - assets/images/communitysupport/newsfeedpublisher/philstar.png
+
+
+     - assets/images/marketplaceseller/communitybtn.png
+     - assets/images/marketplaceseller/marketplacebtn.png
+     - assets/images/marketplaceseller/accountbtn.png
+     - assets/images/marketplaceseller/uploadPic.png
+     - assets/images/marketplaceseller/motorbike.png
+     - assets/images/marketplaceseller/orders.png
+     - assets/images/marketplaceseller/policy.png
+     - assets/images/marketplaceseller/help.png
+     - assets/images/marketplaceseller/accountInfo.png
   fonts:
     - family: Proxima Nova
       fonts:

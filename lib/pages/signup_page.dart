@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lawod/components/textfield.dart';
 import 'package:lawod/pages/login_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignUpPage extends StatelessWidget {
   SignUpPage({super.key});
 
+  // Controllers for text fields
   final first_nameController = TextEditingController();
   final last_nameController = TextEditingController();
   final usernameController = TextEditingController();
@@ -15,8 +17,8 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: Padding(
           padding: const EdgeInsets.only(left: 20.0),
           child: IconButton(
@@ -62,31 +64,31 @@ class SignUpPage extends StatelessWidget {
                   hintText: 'First Name',
                   obscureText: false,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 LawodTextField(
                   controller: last_nameController,
                   hintText: 'Last Name',
                   obscureText: false,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 LawodTextField(
                   controller: usernameController,
                   hintText: 'Username',
                   obscureText: false,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 LawodTextField(
                   controller: emailController,
                   hintText: 'Email',
                   obscureText: false,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 LawodTextField(
                   controller: passwordController,
                   hintText: 'Password',
                   obscureText: true,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 LawodTextField(
                   controller: phone_numberController,
                   hintText: 'Phone Number',
@@ -94,13 +96,47 @@ class SignUpPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ),
-                    );
+                  onPressed: () async {
+                    // Validation check for empty fields
+                    if (first_nameController.text.isEmpty ||
+                        last_nameController.text.isEmpty ||
+                        usernameController.text.isEmpty ||
+                        emailController.text.isEmpty ||
+                        passwordController.text.isEmpty ||
+                        phone_numberController.text.isEmpty) {
+                      return;
+                    }
+
+                    try {
+                      // Get values from controllers
+                      final firstName = first_nameController.text;
+                      final lastName = last_nameController.text;
+                      final username = usernameController.text;
+                      final email = emailController.text;
+                      final password = passwordController.text;
+                      final phoneNumber = phone_numberController.text;
+
+                      // Initiate the Supabase operation in the background
+                      _createSupabaseAccount(
+                        firstName,
+                        lastName,
+                        username,
+                        email,
+                        password,
+                        phoneNumber,
+                      );
+
+                      // Immediately navigate to the login page
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginPage(),
+                        ),
+                      );
+                    } catch (error) {
+                      // Handle any unexpected errors
+                      print('Unexpected error: $error');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF196DFF),
@@ -151,5 +187,39 @@ class SignUpPage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+void _createSupabaseAccount(
+  String firstName,
+  String lastName,
+  String username,
+  String email,
+  String password,
+  String phoneNumber,
+) async {
+  try {
+    // Create an account in Supabase
+    final response = await Supabase.instance.client.from('useracc').upsert([
+      {
+        'firstname': firstName,
+        'lastname': lastName,
+        'username': username,
+        'email': email,
+        'password': password,
+        'phonenumber': phoneNumber,
+      }
+    ]);
+
+    // Check if the account creation was successful
+    if (response != null && response.error == null) {
+      print('Account created successfully');
+    } else {
+      // Handle error (e.g., display an error message)
+      print('Error creating account: ${response?.error?.message}');
+    }
+  } catch (error) {
+    // Handle any unexpected errors
+    print('Unexpected error during account creation: $error');
   }
 }
