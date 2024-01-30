@@ -5,7 +5,7 @@ import 'package:lawod/pages/homescreen_page.dart';
 import 'package:lawod/pages/login_page.dart';
 
 class ForgotPassword extends StatelessWidget {
-  ForgotPassword({Key? key}) : super(key: key);
+  ForgotPassword({super.key});
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();

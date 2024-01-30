@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:lawod/components/bottomnav.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
 import 'chat.dart';
-import 'navbar.dart';
+import 'package:lawod/pages/Community Support/community.dart';
 
 
 class DirectoryListScreen extends StatefulWidget {
   const DirectoryListScreen({super.key});
 
   @override
-  _DirectoryListScreenState createState() => _DirectoryListScreenState();
+  State<DirectoryListScreen> createState() => _DirectoryListScreenState();
 }
 
 class _DirectoryListScreenState extends State<DirectoryListScreen> {
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   final List<String> organizations = [
     'BFAR Region X',
@@ -48,16 +51,16 @@ class _DirectoryListScreenState extends State<DirectoryListScreen> {
         leading: IconButton(
           padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
           icon: const Icon(Icons.arrow_back_ios, size: 20.0),
-          onPressed: () async {
+          onPressed: () {
             Navigator.of(context).pop();
           },
           color: const Color.fromRGBO(79, 79, 79, 1),
         ),
-        titleSpacing: -10,
+        titleSpacing: 0,
         title: const Padding(
           padding: EdgeInsets.only(),
           child: Text(
-            'News Feed',
+            'Directory',
             style: TextStyle(
               color: Color.fromRGBO(25, 109, 255, 1),
               fontFamily: 'Proxima',
@@ -75,7 +78,7 @@ class _DirectoryListScreenState extends State<DirectoryListScreen> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
                 ListTile(
                   leading: Image.asset(
                     communitylogo[index],
@@ -84,14 +87,14 @@ class _DirectoryListScreenState extends State<DirectoryListScreen> {
                   ),
                   title: Text(
                     organizations[index],
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Proxima',
                     ),
                   ),
                   subtitle: Text(
                     addresses[index],
-                    style: TextStyle(fontFamily: 'Proxima'),
+                    style: const TextStyle(fontFamily: 'Proxima'),
                   ),
                   onTap: () {
                     Navigator.push(
@@ -104,7 +107,7 @@ class _DirectoryListScreenState extends State<DirectoryListScreen> {
                     );
                   },
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
               ],
             );
           },
@@ -113,9 +116,16 @@ class _DirectoryListScreenState extends State<DirectoryListScreen> {
       bottomNavigationBar: BottomNavBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          if (index == 0) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Community()));
+          } else if (index == 1) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MarketPlace()));
+          } else if (index == 2) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAccount()));
+          }
         },
       ),
     );

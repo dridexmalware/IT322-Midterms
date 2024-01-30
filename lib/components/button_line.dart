@@ -5,10 +5,10 @@ class LawodButtonLine extends StatelessWidget {
   final Widget child;
 
   const LawodButtonLine({
-    Key? key,
+    super.key,
     this.onPressed,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

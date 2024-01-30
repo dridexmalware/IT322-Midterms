@@ -5,10 +5,10 @@ class LawodButtonFill extends StatelessWidget {
   final Widget child;
 
   const LawodButtonFill({
-    Key? key,
+    super.key,
     this.onPressed,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class LawodButtonFill extends StatelessWidget {
         ),
       ),
       child: DefaultTextStyle(
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 18,
           fontWeight: FontWeight.bold,

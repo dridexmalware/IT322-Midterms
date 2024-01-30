@@ -32,33 +32,29 @@ class _ItemState extends State<Item> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
-          icon: const Icon(Icons.arrow_back_ios, size: 20.0),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          color: const Color.fromRGBO(79, 79, 79, 1),
+        title: const Text(
+          'Bangus',
+          style: TextStyle(
+            color: Color(0xFF196DFF),
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            fontFamily: 'Proxima Nova',
+          ),
         ),
-        titleSpacing: 0,
-        title: const Padding(
-          padding: EdgeInsets.only(),
-          child: Text(
-            'Bangus',
-            style: TextStyle(
-              color: Color.fromRGBO(25, 109, 255, 1),
-              fontFamily: 'Proxima',
-              fontWeight: FontWeight.w700,
-              fontSize: 34,
-            ),
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ),
         actions: [
           IconButton(
             padding: const EdgeInsets.only(top: 5, right: 15, bottom: 5),
-            onPressed: () {
-            },
+            onPressed: () {},
             icon: Image.asset(
               'assets/images/marketplace/user/cartlogo.png',
               width: 24.0,

@@ -87,11 +87,12 @@ class FisherfolkRegistration extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => FisherfolkLanding(),
+                          builder: (context) => const FisherfolkLanding(),
                         ),
                       );
                     } catch (error) {
                       // Handle any unexpected errors
+                      // ignore: avoid_print
                       print('Unexpected error: $error');
                     }
                   },

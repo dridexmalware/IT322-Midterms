@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lawod/components/bottomnav.dart';
+import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Community%20Support/createpost.dart';
-import 'navbar.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
 import 'newsdetails.dart';
 import 'chat.dart';
 
@@ -64,11 +67,11 @@ class NewsFeed extends StatefulWidget {
   const NewsFeed({super.key});
 
   @override
-  _NewsFeedState createState() => _NewsFeedState();
+  State<NewsFeed> createState() => _NewsFeedState();
 }
 
 class _NewsFeedState extends State<NewsFeed> {
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +86,12 @@ class _NewsFeedState extends State<NewsFeed> {
           leading: IconButton(
             padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
             icon: const Icon(Icons.arrow_back_ios, size: 20.0),
-            onPressed: () async {
+            onPressed: () {
               Navigator.of(context).pop();
             },
             color: const Color.fromRGBO(79, 79, 79, 1),
           ),
-          titleSpacing: -10,
+          titleSpacing: 0,
           title: const Padding(
             padding: EdgeInsets.only(),
             child: Text(
@@ -106,9 +109,16 @@ class _NewsFeedState extends State<NewsFeed> {
         bottomNavigationBar: BottomNavBar(
           currentIndex: _currentIndex,
           onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
+            if (index == 0) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Community()));
+            } else if (index == 1) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MarketPlace()));
+            } else if (index == 2) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const UserAccount()));
+            }
           },
         ),
         floatingActionButton: Container(
@@ -191,8 +201,8 @@ class _NewsFeedState extends State<NewsFeed> {
                         ),
                       ),
                       const SizedBox(height: 5.0),
-                      SizedBox(height: 5.0),
-                      Center(
+                      const SizedBox(height: 5.0),
+                      const Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -206,23 +216,23 @@ class _NewsFeedState extends State<NewsFeed> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 5.0),
+                      const SizedBox(height: 5.0),
                       Center(
                         child: Container(
-                          constraints: BoxConstraints(minWidth: 200),
+                          constraints: const BoxConstraints(minWidth: 200),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 IconData(0xe958, fontFamily: 'MaterialIcons'),
                                 size: 16.0,
                                 color: Colors.grey,
                               ),
-                              SizedBox(width: 5.0),
+                              const SizedBox(width: 5.0),
                               Flexible(
                                 child: Text(
                                   _truncatePublisherName(newsTile.publisher),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.grey,
                                       fontFamily: 'Proxima'),
                                   overflow: TextOverflow.ellipsis,
@@ -246,10 +256,11 @@ class _NewsFeedState extends State<NewsFeed> {
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        minimumSize: Size(80, 30),
-                                        backgroundColor: Color(0xFF196DFF),
+                                        minimumSize: const Size(80, 30),
+                                        backgroundColor:
+                                            const Color(0xFF196DFF),
                                       ),
-                                      child: Text(
+                                      child: const Text(
                                         'Message',
                                         style: TextStyle(
                                           fontSize: 12,
@@ -267,10 +278,7 @@ class _NewsFeedState extends State<NewsFeed> {
                           ),
                         ),
                       ),
-                  ]
-                )
-              )
-          );
+                    ])));
       },
     );
   }

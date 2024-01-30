@@ -5,15 +5,15 @@ import 'package:image_picker/image_picker.dart';
 class ChatScreen extends StatefulWidget {
   final String organizationName;
 
-  ChatScreen({required this.organizationName});
+  const ChatScreen({super.key, required this.organizationName});
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
-  List<Map<String, dynamic>> _messages = [];
+  final List<Map<String, dynamic>> _messages = [];
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _attachFile() async {
@@ -24,24 +24,28 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Wrap(
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Pick from Gallery'),
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Pick from Gallery'),
                 onTap: () async {
-                  final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+                  final XFile? image =
+                      await _picker.pickImage(source: ImageSource.gallery);
                   if (image != null) {
                     _sendMessage(image.path, isImage: true);
                   }
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text('Take a Photo'),
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Take a Photo'),
                 onTap: () async {
-                  final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+                  final XFile? image =
+                      await _picker.pickImage(source: ImageSource.camera);
                   if (image != null) {
                     _sendMessage(image.path, isImage: true);
                   }
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 },
               ),
@@ -77,13 +81,15 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Widget _buildMessageBubble(bool sentByMe, String content, DateTime time, bool isImage) {
+  Widget _buildMessageBubble(
+      bool sentByMe, String content, DateTime time, bool isImage) {
     return GestureDetector(
       onTap: () {
         if (isImage) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ImageViewScreen(imagePath: content)),
+            MaterialPageRoute(
+                builder: (context) => ImageViewScreen(imagePath: content)),
           );
         }
       },
@@ -97,25 +103,27 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             decoration: BoxDecoration(
               color: sentByMe
-                  ? Color.fromARGB(255, 255, 255, 255)
-                  : Color(0xFF196DFF),
+                  ? const Color.fromARGB(255, 255, 255, 255)
+                  : const Color(0xFF196DFF),
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-                bottomLeft:
-                    sentByMe ? Radius.circular(12) : Radius.circular(12),
-                bottomRight:
-                    sentByMe ? Radius.circular(0) : Radius.circular(12),
+                topLeft: const Radius.circular(12),
+                topRight: const Radius.circular(12),
+                bottomLeft: sentByMe
+                    ? const Radius.circular(12)
+                    : const Radius.circular(12),
+                bottomRight: sentByMe
+                    ? const Radius.circular(0)
+                    : const Radius.circular(12),
               ),
               border: Border.all(
                 color: sentByMe
                     ? const Color.fromARGB(255, 37, 37, 37)
-                    : Color(0xFF196DFF),
+                    : const Color(0xFF196DFF),
                 width: 0.5,
               ),
             ),
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -136,7 +144,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     softWrap: true,
                   ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   _formatTime(time),
                   style: TextStyle(
@@ -156,30 +164,26 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80.0),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
-            child: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, size: 20.0),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              titleSpacing: -15,
-              title: Text(
-                widget.organizationName,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(25, 109, 255, 1),
-                ),
-              ),
-            ),
+      appBar: AppBar(
+          elevation: 0,
+          leading: IconButton(
+            padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
+            icon: const Icon(Icons.arrow_back_ios, size: 20.0),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            color: const Color.fromRGBO(79, 79, 79, 1),
           ),
-        ),
-      ),
+          titleSpacing: 0,
+          title: Text(
+            widget.organizationName,
+            style: const TextStyle(
+              color: Color.fromRGBO(25, 109, 255, 1),
+              fontFamily: 'Proxima',
+              fontWeight: FontWeight.w700,
+              fontSize: 34,
+            ),
+          )),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -197,12 +201,13 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () {
                     _attachFile();
                   },
@@ -210,19 +215,18 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Color(0xFFF7F7FC),
+                      color: const Color(0xFFF7F7FC),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: TextField(
                         controller: _textController,
-                        style: TextStyle(fontSize: 16.0),
+                        style: const TextStyle(fontSize: 16.0),
                         minLines: 1,
                         maxLines: null,
-                        decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 15.0),
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(vertical: 15.0),
                           border: InputBorder.none,
                           hintText: 'Enter your message...',
                         ),
@@ -231,11 +235,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 Transform.translate(
-                  offset: Offset(0, -5.0),
+                  offset: const Offset(0, -5.0),
                   child: Transform.rotate(
                     angle: -40 * 3.14159 / 180,
                     child: IconButton(
-                      icon: Icon(Icons.send, color: Color(0xFF196DFF)),
+                      icon: const Icon(Icons.send, color: Color(0xFF196DFF)),
                       onPressed: () {
                         if (_textController.text.isNotEmpty) {
                           _sendMessage(_textController.text);
@@ -256,13 +260,13 @@ class _ChatScreenState extends State<ChatScreen> {
 class ImageViewScreen extends StatelessWidget {
   final String imagePath;
 
-  ImageViewScreen({required this.imagePath});
+  const ImageViewScreen({super.key, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image'),
+        title: const Text('Image'),
       ),
       body: Center(
         child: Image.file(

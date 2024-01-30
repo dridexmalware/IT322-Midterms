@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:lawod/components/bottomnav.dart';
 import 'package:lawod/main.dart';
+import 'package:lawod/pages/Community%20Support/community.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_email.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_name.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_password.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_phone.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/username_fullname.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
 
 class UserInfo extends StatefulWidget {
   const UserInfo({super.key});
@@ -15,6 +19,8 @@ class UserInfo extends StatefulWidget {
 
 class _UserInfoState extends State<UserInfo> {
   Map<String, dynamic>? userData;
+  final int _currentIndex = 1;
+
 
   @override
   void initState() {
@@ -49,25 +55,24 @@ class _UserInfoState extends State<UserInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Center(
-          child: SizedBox(
-            width: 305,
-            child: Text(
-              'Information',
-              style: TextStyle(
-                color: Color(0xFF196DFF),
-                fontSize: 31,
-                fontFamily: 'Proxima Nova',
-                fontWeight: FontWeight.w700,
-                height: 0,
-              ),
-            ),
+        title: const Text(
+          'Information',
+          style: TextStyle(
+            color: Color(0xFF196DFF),
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            fontFamily: 'Proxima Nova',
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF4F4F4F)),
-          onPressed: () => Navigator.of(context).pop(),
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
       ),
       body: Center(
@@ -120,6 +125,21 @@ class _UserInfoState extends State<UserInfo> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Community()));
+          } else if (index == 1) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MarketPlace()));
+          } else if (index == 2) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAccount()));
+          }
+        },
       ),
     );
   }

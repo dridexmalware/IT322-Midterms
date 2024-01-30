@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lawod/components/bottomnav.dart';
 import 'package:lawod/main.dart';
+import 'package:lawod/pages/Community%20Support/community.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_info.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
 
 class UserPassword extends StatefulWidget {
   const UserPassword({super.key});
@@ -12,6 +16,7 @@ class UserPassword extends StatefulWidget {
 class _UserPassword extends State<UserPassword> {
   final newUserPasswordController = TextEditingController();
   final confirmUserPasswordController = TextEditingController();
+  final int _currentIndex = 1;
 
   Map<String, dynamic>? userData;
 
@@ -36,8 +41,6 @@ class _UserPassword extends State<UserPassword> {
         setState(() {
           userData = response;
         });
-
-        // Print the user data for debugging
         // ignore: avoid_print
         print('User Data: $userData');
       }
@@ -60,13 +63,23 @@ class _UserPassword extends State<UserPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Color(0xFF4F4F4F)),
         title: const Text(
           'Password',
           style: TextStyle(
             color: Color(0xFF196DFF),
             fontWeight: FontWeight.bold,
+            fontSize: 30,
+            fontFamily: 'Proxima Nova',
+          ),
+        ),
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ),
       ),
@@ -126,7 +139,6 @@ class _UserPassword extends State<UserPassword> {
                       String confirmUserPassword = confirmUserPasswordController.text;
 
                       if (newUserPassword != confirmUserPassword) {
-                        // Handle UserPassword mismatch error
                         return;
                       }
 
@@ -148,6 +160,21 @@ class _UserPassword extends State<UserPassword> {
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Community()));
+          } else if (index == 1) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MarketPlace()));
+          } else if (index == 2) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAccount()));
+          }
+        },
       ),
     );
   }

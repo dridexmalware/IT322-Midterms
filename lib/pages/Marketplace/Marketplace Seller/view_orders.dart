@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:lawod/components/bottomnav.dart';
+import 'package:lawod/pages/Community%20Support/community.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
 import 'order_content.dart';
 import 'fisherfolk_page.dart';
 
 class ViewOrders extends StatefulWidget {
+  const ViewOrders({super.key});
+
   @override
-  _ViewOrdersState createState() => _ViewOrdersState();
+  State<ViewOrders> createState() => _ViewOrdersState();
 }
 
 class _ViewOrdersState extends State<ViewOrders> {
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
-  void _handleNavigationTap(int index) {
-    setState(() {
-      _currentIndex = index;
-      // Handle navigation logic here
-    });
-  }
 
   List<Map<String, dynamic>> orders = [
     {
@@ -30,7 +30,6 @@ class _ViewOrdersState extends State<ViewOrders> {
       'total': '₱ 600.00',
       'productImage': 'https://drive.google.com/uc?export=view&id=1xEDEFW_GDtPycbWw8UiUEnBfDL3q_vOH',
     },
-    // Add more orders as needed
   ];
 
   @override
@@ -38,9 +37,9 @@ class _ViewOrdersState extends State<ViewOrders> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Orders',
+          'Order',
           style: TextStyle(
-            color: Color(0xFF196DFF), // Blue color for the title
+            color: Color(0xFF196DFF),
             fontWeight: FontWeight.bold,
             fontSize: 30,
             fontFamily: 'Proxima Nova',
@@ -64,11 +63,11 @@ class _ViewOrdersState extends State<ViewOrders> {
           return InkWell(
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => OrderContent()),
+                MaterialPageRoute(builder: (context) => const OrderContent()),
               );
             },
             child: Container(
-              margin: EdgeInsets.fromLTRB(32, 8, 32, 8),
+              margin: const EdgeInsets.fromLTRB(32, 8, 32, 8),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -77,7 +76,7 @@ class _ViewOrdersState extends State<ViewOrders> {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 1,
                     blurRadius: 5,
-                    offset: Offset(0, 3),
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
@@ -102,7 +101,7 @@ class _ViewOrdersState extends State<ViewOrders> {
                           children: [
                             Text(
                               order['orderID'] ?? 'Order ID',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                                 fontFamily: 'Proxima Nova',
@@ -110,7 +109,7 @@ class _ViewOrdersState extends State<ViewOrders> {
                             ),
                             Text(
                               'Quantity: ${order['orderQuantity'] ?? 'N/A'}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                                 color: Color(0xFF4F4F4F),
                                 fontFamily: 'Proxima Nova',
@@ -118,7 +117,7 @@ class _ViewOrdersState extends State<ViewOrders> {
                             ),
                             Text(
                               'Total: ${order['total'] ?? 'N/A'}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Color(0xFF196DFF),
                                 fontWeight: FontWeight.bold,
@@ -130,22 +129,21 @@ class _ViewOrdersState extends State<ViewOrders> {
                     ),
                     InkWell(
                       onTap: () {
-                        // TODO: Handle delete order
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white, // Button color
+                          color: Colors.white,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Color(0xFFC01F1F),// Border color
-                            width: 2, // Border width
+                            color: const Color(0xFFC01F1F),
+                            width: 2,
                           ),
                         ),
-                        child: Icon(
+                        padding: const EdgeInsets.all(0.5),
+                        child: const Icon(
                           Icons.close,
                           color: Color(0xFFC01F1F),
-                        ),
-                        padding: EdgeInsets.all(0.5), // Padding inside the container for the icon
+                        ), 
                       ),
                     ),
                   ],
@@ -155,9 +153,20 @@ class _ViewOrdersState extends State<ViewOrders> {
           );
         },
       ),
-      bottomNavigationBar: CustomCurvedNavigationBar(
-        index: _currentIndex,
-        onNavigationTap: _handleNavigationTap,
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Community()));
+          } else if (index == 1) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MarketPlace()));
+          } else if (index == 2) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAccount()));
+          }
+        },
       ),
     );
   }

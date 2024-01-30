@@ -1,22 +1,29 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lawod/components/bottomnav.dart';
+import 'package:lawod/pages/Community%20Support/community.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
 
 class SellProduct extends StatefulWidget {
+  const SellProduct({super.key});
+
   @override
-  _SellProductState createState() => _SellProductState();
+  State<SellProduct> createState() => _SellProductState();
 }
 
 class _SellProductState extends State<SellProduct> {
   final ImagePicker _picker = ImagePicker();
   final _formKey = GlobalKey<FormState>();
+  final int _currentIndex = 1;
+
   String productName = '';
   int productPrice = 0;
   String category = '';
   int productStock = 0;
   XFile? image;
 
-  // Dummy categories
   final List<String> categories = ['Fish', 'Shellfish', 'Equipment', 'Gears'];
 
   Future<void> pickImage(ImageSource source) async {
@@ -28,18 +35,17 @@ class _SellProductState extends State<SellProduct> {
 
   void submitSellForm() {
     if (_formKey.currentState!.validate()) {
-      // Implement the product addition logic here
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+    appBar: AppBar(
         title: const Text(
           'Start Selling',
           style: TextStyle(
-            color: Color(0xFF196DFF), // Blue color for the title
+            color: Color(0xFF196DFF),
             fontWeight: FontWeight.bold,
             fontSize: 30,
             fontFamily: 'Proxima Nova',
@@ -69,7 +75,7 @@ class _SellProductState extends State<SellProduct> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(color: Color(0xFF828282)),
+                    border: Border.all(color: const Color(0xFF828282)),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
@@ -80,7 +86,7 @@ class _SellProductState extends State<SellProduct> {
                             width: double.infinity,
                             height: double.infinity,
                           )
-                        : Center(
+                        : const Center(
                             child: Text(
                               'Tap Button below to Upload Image',
                               style: TextStyle(color: Color(0xFF828282)),
@@ -88,13 +94,13 @@ class _SellProductState extends State<SellProduct> {
                           ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
                   height: 32,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.0),
-                    color: Color(0xFFE0ECF8),
+                    color: const Color(0xFFE0ECF8),
                   ),
                   child: Center(
                     child: InkWell(
@@ -106,16 +112,16 @@ class _SellProductState extends State<SellProduct> {
                               child: Wrap(
                                 children: <Widget>[
                                   ListTile(
-                                    leading: Icon(Icons.photo_library),
-                                    title: Text('Pick from Gallery'),
+                                    leading: const Icon(Icons.photo_library),
+                                    title: const Text('Pick from Gallery'),
                                     onTap: () {
                                       pickImage(ImageSource.gallery);
                                       Navigator.of(context).pop();
                                     },
                                   ),
                                   ListTile(
-                                    leading: Icon(Icons.photo_camera),
-                                    title: Text('Take a Photo'),
+                                    leading: const Icon(Icons.photo_camera),
+                                    title: const Text('Take a Photo'),
                                     onTap: () {
                                       pickImage(ImageSource.camera);
                                       Navigator.of(context).pop();
@@ -134,7 +140,7 @@ class _SellProductState extends State<SellProduct> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   style: const TextStyle(
                     fontSize: 18,
@@ -156,7 +162,7 @@ class _SellProductState extends State<SellProduct> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   style: const TextStyle(
                     fontSize: 18,
@@ -172,7 +178,7 @@ class _SellProductState extends State<SellProduct> {
                     ),
                   ),
                   onChanged: (value) => productPrice = int.tryParse(value) ?? 0,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the price per kilo';
@@ -180,7 +186,7 @@ class _SellProductState extends State<SellProduct> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 DropdownButtonFormField(
                   style: const TextStyle(
                     fontSize: 18,
@@ -210,7 +216,7 @@ class _SellProductState extends State<SellProduct> {
                   validator: (value) =>
                       value == null ? 'Please select a category' : null,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   style: const TextStyle(
                     fontSize: 18,
@@ -225,7 +231,7 @@ class _SellProductState extends State<SellProduct> {
                     ),
                   ),
                   onChanged: (value) => productStock = int.tryParse(value) ?? 0,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the stock information';
@@ -233,9 +239,18 @@ class _SellProductState extends State<SellProduct> {
                     return null;
                   },
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 ElevatedButton(
-                  child: Text(
+                  onPressed: submitSellForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0054E5),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  ),
+                  child: const Text(
                     'Sell Product',
                     style: TextStyle(
                         fontSize: 18,
@@ -243,20 +258,26 @@ class _SellProductState extends State<SellProduct> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  onPressed: submitSellForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF0054E5),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                  ),
                 ),
               ],
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Community()));
+          } else if (index == 1) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MarketPlace()));
+          } else if (index == 2) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAccount()));
+          }
+        },
       ),
     );
   }

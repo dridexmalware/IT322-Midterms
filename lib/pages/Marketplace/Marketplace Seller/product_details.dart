@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:lawod/components/bottomnav.dart';
+import 'package:lawod/pages/Community%20Support/community.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
+
 class EditProduct extends StatefulWidget {
+  const EditProduct({super.key});
+
   @override
-  _EditProductState createState() => _EditProductState();
+  State<EditProduct>createState() => _EditProductState();
 }
 
 class _EditProductState extends State<EditProduct> {
@@ -15,11 +22,11 @@ class _EditProductState extends State<EditProduct> {
   int productStock = 10;
   XFile? image;
 
-  // Dummy categories
+  final int _currentIndex = 1;
+
   final List<String> categories = ['Fish', 'Shellfish', 'Equipment', 'Gears'];
 
   void submitSaveDetails() {
-    // Implement logic to save the edited details
   }
 
   Future<void> pickImage(ImageSource source) async {
@@ -34,9 +41,9 @@ class _EditProductState extends State<EditProduct> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Edit Product Details',
+          'Edit Details',
           style: TextStyle(
-            color: Color(0xFF196DFF), // Blue color for the title
+            color: Color(0xFF196DFF),
             fontWeight: FontWeight.bold,
             fontSize: 30,
             fontFamily: 'Proxima Nova',
@@ -64,7 +71,7 @@ class _EditProductState extends State<EditProduct> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(color: Color(0xFF4F4F4F)),
+                  border: Border.all(color: const Color(0xFF4F4F4F)),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20.0),
@@ -83,12 +90,12 @@ class _EditProductState extends State<EditProduct> {
                         ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 height: 32,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
-                  color: Color(0xFFE0ECF8),
+                  color: const Color(0xFFE0ECF8),
                 ),
                 child: Center(
                   child: InkWell(
@@ -100,16 +107,16 @@ class _EditProductState extends State<EditProduct> {
                             child: Wrap(
                               children: <Widget>[
                                 ListTile(
-                                  leading: Icon(Icons.photo_library),
-                                  title: Text('Pick from Gallery'),
+                                  leading: const Icon(Icons.photo_library),
+                                  title: const Text('Pick from Gallery'),
                                   onTap: () {
                                     pickImage(ImageSource.gallery);
                                     Navigator.of(context).pop();
                                   },
                                 ),
                                 ListTile(
-                                  leading: Icon(Icons.photo_camera),
-                                  title: Text('Take a Photo'),
+                                  leading: const Icon(Icons.photo_camera),
+                                  title: const Text('Take a Photo'),
                                   onTap: () {
                                     pickImage(ImageSource.camera);
                                     Navigator.of(context).pop();
@@ -128,7 +135,7 @@ class _EditProductState extends State<EditProduct> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 initialValue: productName,
                 decoration: InputDecoration(
@@ -137,7 +144,7 @@ class _EditProductState extends State<EditProduct> {
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
                   fontSize: 18,
@@ -149,7 +156,7 @@ class _EditProductState extends State<EditProduct> {
                   });
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 initialValue: productPrice.toString(),
                 decoration: InputDecoration(
@@ -159,7 +166,7 @@ class _EditProductState extends State<EditProduct> {
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
                   fontSize: 18,
@@ -170,9 +177,9 @@ class _EditProductState extends State<EditProduct> {
                     productPrice = double.tryParse(value) ?? 0.0;
                   });
                 },
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               DropdownButtonFormField(
                 decoration: InputDecoration(
                   labelText: 'Category',
@@ -180,7 +187,7 @@ class _EditProductState extends State<EditProduct> {
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
                   fontSize: 18,
@@ -199,7 +206,7 @@ class _EditProductState extends State<EditProduct> {
                   );
                 }).toList(),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 initialValue: productStock.toString(),
                 decoration: InputDecoration(
@@ -208,7 +215,7 @@ class _EditProductState extends State<EditProduct> {
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
                   fontSize: 18,
@@ -221,9 +228,18 @@ class _EditProductState extends State<EditProduct> {
                 },
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               ElevatedButton(
-                child: Text(
+                onPressed: submitSaveDetails,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0054E5),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                ),
+                child: const Text(
                   'Save Details',
                   style: TextStyle(
                     fontSize: 18,
@@ -231,19 +247,25 @@ class _EditProductState extends State<EditProduct> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: submitSaveDetails,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0054E5),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                ),
               ),
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Community()));
+          } else if (index == 1) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MarketPlace()));
+          } else if (index == 2) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAccount()));
+          }
+        },
       ),
     );
   }

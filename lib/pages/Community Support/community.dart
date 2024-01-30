@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lawod/pages/Community%20Support/directorylist.dart';
 import 'package:lawod/pages/Community%20Support/newsfeed.dart';
-import '../homescreen_page.dart';
-
 
 class Community extends StatefulWidget {
   const Community({super.key});
@@ -25,13 +23,7 @@ class _CommunityState extends State<Community> {
           padding: const EdgeInsets.only(top: 15),
           icon: const Icon(Icons.arrow_back_ios, size: 20.0),
           onPressed: () async {
-            var result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-            setState(() {
-              returnedData = result;
-            });
+            Navigator.of(context).pop();
           },
           color: Colors.white,
         ),
@@ -111,7 +103,7 @@ class _CommunityState extends State<Community> {
                   height: 60,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => NewsFeed()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const NewsFeed()));
                     },
                     style: ButtonStyle(
                       backgroundColor:

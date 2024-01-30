@@ -19,14 +19,24 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          padding: const EdgeInsets.only(top: 15),
-          icon: const Icon(Icons.arrow_back_ios, size: 20.0),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          color: const Color.fromRGBO(79, 79, 79, 1),
+        title: const Text(
+          'Categories',
+          style: TextStyle(
+            color: Color(0xFF196DFF),
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            fontFamily: 'Proxima Nova',
+          ),
+        ),
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
       ),
       extendBodyBehindAppBar: true,

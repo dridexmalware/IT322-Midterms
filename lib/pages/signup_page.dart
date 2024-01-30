@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lawod/components/supabase.dart';
 import 'package:lawod/components/textfield.dart';
 import 'package:lawod/pages/login_page.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignUpPage extends StatelessWidget {
   SignUpPage({super.key});

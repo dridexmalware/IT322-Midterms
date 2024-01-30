@@ -25,7 +25,7 @@ class BottomNavBar extends StatelessWidget {
           height: 30,
         ),
         Image.asset(
-          'assets/images/communitysupport/bottomNav/marketplacebtn.png',
+          'assets/images/communitysupport/bottomNav/accountbtn.png',
           width: 30,
           height: 30,
         ),

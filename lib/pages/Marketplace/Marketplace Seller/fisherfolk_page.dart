@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
-import 'user_account.dart';
-import 'sell_product.dart';
-import 'view_products.dart';
-import 'view_orders.dart';
+import 'package:lawod/components/bottomnav.dart';
+import 'package:lawod/pages/Community%20Support/community.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/sell_product.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/view_orders.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/view_products.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class FisherfolkLanding extends StatefulWidget {
   const FisherfolkLanding({super.key});
 
   @override
-  _FisherfolkLandingState createState() => _FisherfolkLandingState();
+  State<FisherfolkLanding> createState() => _FisherfolkLandingState();
 }
 
 class _FisherfolkLandingState extends State<FisherfolkLanding> {
   String userName =
-      'Gaga’s Fish Market'; // Example username, replace with your dynamic
-  int _currentIndex = 0;
-
-  void _handleNavigationTap(int index) {
-    setState(() {
-      _currentIndex = index;
-      // Handle navigation logic here
-    });
-  }
+      'Gaga’s Fish Market';
+  final int _currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +28,7 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
         title: const Text(
           'Seller',
           style: TextStyle(
-            color: Color(0xFF196DFF), // Blue color for the title
+            color: Color(0xFF196DFF),
             fontWeight: FontWeight.bold,
             fontSize: 30,
             fontFamily: 'Proxima Nova',
@@ -190,7 +186,7 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) => SellProduct()),
+                              builder: (context) => const SellProduct()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -252,9 +248,20 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
           ),
         ],
       ),
-      bottomNavigationBar: CustomCurvedNavigationBar(
-        index: _currentIndex,
-        onNavigationTap: _handleNavigationTap,
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Community()));
+          } else if (index == 1) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MarketPlace()));
+          } else if (index == 2) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAccount()));
+          }
+        },
       ),
     );
   }
@@ -279,12 +286,12 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
         onTap: () {
           if (label == 'Products') {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ViewProducts(),
+              builder: (context) => const ViewProducts(),
             ));
           }
           if (label == 'Orders') {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ViewOrders(),
+              builder: (context) => const ViewOrders(),
             ));
           }
         },
@@ -315,7 +322,7 @@ class CustomCurvedNavigationBar extends StatelessWidget {
   final int index;
   final Function(int) onNavigationTap;
 
-  CustomCurvedNavigationBar({
+  const CustomCurvedNavigationBar({super.key, 
     required this.index,
     required this.onNavigationTap,
   });

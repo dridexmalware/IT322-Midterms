@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CheckoutPage extends StatefulWidget {
+  const CheckoutPage({super.key});
+
   @override
   _CheckoutPageState createState() => _CheckoutPageState();
 }
@@ -26,40 +28,41 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Color(0xFF4F4F4F)),
-          onPressed: () => Navigator.of(context).pop(),
+        title: const Text(
+          'Check Out',
+          style: TextStyle(
+            color: Color(0xFF196DFF),
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            fontFamily: 'Proxima Nova',
+          ),
         ),
-        title: Text(
-          'Checkout',
-          style: TextStyle(color: Color(0xFF196DFF), fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.shopping_cart, color: Color(0xFFFFAB19)),
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
-              // Handle cart icon press
+              Navigator.of(context).pop();
             },
           ),
-        ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // Product Cards ListView.builder goes here
             Container(
               height: 325,
-              padding: EdgeInsets.all(32.0),// Adjust the height as needed
+              padding: const EdgeInsets.all(32.0),// Adjust the height as needed
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: products.length,
                 itemBuilder: (context, index) {
                   return Card(
                     color: Colors.white,
-                    child: Container(
+                    child: SizedBox(
                       width: 165, // Adjust the width as needed
                       child: Stack(
                         children: [
@@ -78,14 +81,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Text(
                                   products[index]['productName'],
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Text(
                                   '₱${products[index]['productPrice']}/kilo',
-                                  style: TextStyle(color: Color(0xFF196DFF), fontWeight: FontWeight.bold),
+                                  style: const TextStyle(color: Color(0xFF196DFF), fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],
@@ -104,7 +107,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Icon(
+                                child: const Icon(
                                   Icons.close,
                                   color: Color(0xFF196DFF),
                                   size: 20,
@@ -124,22 +127,22 @@ class _CheckoutPageState extends State<CheckoutPage> {
               child: Column(
                 children: [
                   _buildInfoRow('Delivery', 'Zone 3, Poblacion Alubijid', 'via Motorcycle'),
-                  Divider(color: Color(0xFF828282)),
+                  const Divider(color: Color(0xFF828282)),
                   _buildInfoRow('Payment', 'Cash on Delivery', null),
-                  Divider(color: Color(0xFF828282)),
+                  const Divider(color: Color(0xFF828282)),
                   _buildInfoRow('Total', '₱330', null),
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 32.0),
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
               width: double.infinity, // Ensures the button stretches to the screen width
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF196DFF), // Background color
+                  backgroundColor: const Color(0xFF196DFF), // Background color
                   foregroundColor: Colors.white, // Text color
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30), // Rounded corners
                   ),
@@ -147,13 +150,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 onPressed: () {
                   // Handle confirm order
                 },
-                child: Text(
+                child: const Text(
                   'Confirm Order',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
             ),
-            SizedBox(height: 20), // Add spacing at the bottom
+            const SizedBox(height: 20), // Add spacing at the bottom
           ],
         ),
       ),
@@ -166,12 +169,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(value, style: TextStyle(color: Color(0xFF196DFF), fontWeight: FontWeight.bold)),
-              if (subValue != null) Text(subValue, style: TextStyle(color: Color(0xFF196DFF))),
+              Text(value, style: const TextStyle(color: Color(0xFF196DFF), fontWeight: FontWeight.bold)),
+              if (subValue != null) Text(subValue, style: const TextStyle(color: Color(0xFF196DFF))),
             ],
           )
         ],

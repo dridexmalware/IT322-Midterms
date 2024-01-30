@@ -1,47 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:lawod/components/bottomnav.dart';
+import 'package:lawod/pages/Community%20Support/community.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
+import 'package:lawod/pages/Marketplace/marketplace.dart';
 
 class TrackingPage extends StatefulWidget {
+  const TrackingPage({super.key});
+
   @override
-  _TrackingPageState createState() => _TrackingPageState();
+  State<TrackingPage> createState() => _TrackingPageState();
 }
 
 class _TrackingPageState extends State<TrackingPage> {
-  // Dummy data from database
   final String orderId = "LO40569863554NI";
   final String orderFrom = "Gaga's Fish Market";
   final String deliveryAddress = "Zone 3, Poblacion";
+  final int _currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
+        title: const Text(
           'Tracking',
-          style: TextStyle(color: Color(0xFF196DFF), fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Color(0xFF196DFF),
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            fontFamily: 'Proxima Nova',
+          ),
         ),
-        iconTheme: IconThemeData(color: Color(0xFF4F4F4F)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Align to start
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Center(
                 child: Image.asset(
-                  'assets/images/motorbike.png', // Replace with your asset image path
-                  height: 200, // Adjust the size as per your requirement
+                  'assets/images/motorbike.png',
+                  height: 200,
                 ),
               ),
-              SizedBox(height: 20),
-              Center( // Centered Estimated delivery time and 15 mins
+              const SizedBox(height: 20),
+              const Center(
                 child: Column(
                   children: <Widget>[
                     Text(
@@ -50,64 +64,79 @@ class _TrackingPageState extends State<TrackingPage> {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      '15 mins', // This would be dynamically fetched from the database
+                      '15 mins',
                       style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xFF0A1034)),
                       textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 30), // Increased space before the progress bar
+              const SizedBox(height: 30),
               _buildProgressBar(),
-              SizedBox(height: 30), // Increased space after the progress bar
-              Padding( // Added padding to Tracking number
-                padding: const EdgeInsets.fromLTRB(32, 4, 32, 4),
+              const SizedBox(height: 30),
+              const Padding( 
+                padding: EdgeInsets.fromLTRB(32, 4, 32, 4),
                 child: Text(
                   'Tracking number',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(height: 5),
-              Padding( // Added padding and adjusted colors for "GAGA" and order ID
+              const SizedBox(height: 5),
+              Padding( 
                 padding: const EdgeInsets.fromLTRB(32, 4, 32, 4),
                 child: Row(
                   children: <Widget>[
-                    Text(
+                    const Text(
                       'GAGA  ',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     Text(
                       orderId,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF196DFF)),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF196DFF)),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildInfoRow('You order from:', orderFrom),
               _buildInfoRow('Delivery address', deliveryAddress),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Community()));
+          } else if (index == 1) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MarketPlace()));
+          } else if (index == 2) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAccount()));
+          }
+        },
+      ),
     );
   }
 
   Widget _buildProgressBar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 4, 32, 4), // Added padding
+      padding: const EdgeInsets.fromLTRB(32, 4, 32, 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           _buildProgressIndicator(isActive: true),
-          Expanded(
+          const Expanded(
             child: Divider(
               color: Color(0xFF196DFF),
               thickness: 2,
             ),
           ),
           _buildProgressIndicator(isActive: true),
-          Expanded(
+          const Expanded(
             child: Divider(
               color: Color(0xFF196DFF),
               thickness: 2,
@@ -122,30 +151,30 @@ class _TrackingPageState extends State<TrackingPage> {
   Widget _buildProgressIndicator({required bool isActive}) {
     return CircleAvatar(
       radius: 20,
-      backgroundColor: isActive ? Color(0xFF196DFF) : Colors.grey,
+      backgroundColor: isActive ? const Color(0xFF196DFF) : Colors.grey,
       child: isActive
-          ? Icon(Icons.check, color: Colors.white)
-          : Container(), // Empty container for an inactive state
+          ? const Icon(Icons.check, color: Colors.white)
+          : Container(), 
     );
   }
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 4, 32, 4), // Added padding
+      padding: const EdgeInsets.fromLTRB(32, 4, 32, 4),
       child: Row(
         children: <Widget>[
           Expanded(
             flex: 2,
             child: Text(
               label,
-              style: TextStyle(fontSize: 16, color: Color(0xFF4F4F4F)),
+              style: const TextStyle(fontSize: 16, color: Color(0xFF4F4F4F)),
             ),
           ),
           Expanded(
             flex: 3,
             child: Text(
               value,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0A1034)),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0A1034)),
               overflow: TextOverflow.ellipsis,
             ),
           ),

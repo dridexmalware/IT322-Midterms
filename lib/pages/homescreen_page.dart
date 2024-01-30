@@ -30,7 +30,7 @@ class _SnappingListState extends State<HomeScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                WeatherWidget(
+                const WeatherWidget(
 
                 ),
                 const SizedBox(
@@ -73,7 +73,7 @@ class _SnappingListState extends State<HomeScreen> {
         buttonText = 'Explore';
     }
 
-    return Container(
+    return SizedBox(
       width: 380,
       child: Card(
         shape: RoundedRectangleBorder(
@@ -99,7 +99,7 @@ class _SnappingListState extends State<HomeScreen> {
                   children: [
                     Text(
                       buttonText,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 30,
                         fontFamily: 'Proxima Nova',
@@ -119,13 +119,13 @@ class _SnappingListState extends State<HomeScreen> {
                           case 1:
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => MarketPlace()),
+                              MaterialPageRoute(builder: (context) => const MarketPlace()),
                             );
                             break;
                           case 2:
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Community()),
+                              MaterialPageRoute(builder: (context) => const Community()),
                             );
                             break;
                           default:
@@ -133,15 +133,15 @@ class _SnappingListState extends State<HomeScreen> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFFFFAB19),
+                        backgroundColor: const Color(0xFFFFAB19),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 10,
-                        padding: EdgeInsets.symmetric(horizontal: 115, vertical: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 115, vertical: 20),
                         // You can customize other properties such as shadow, text style, etc.
                       ),
-                      child: Text(
+                      child: const Text(
                         'Explore',
                         style: TextStyle(
                           color: Colors.white,

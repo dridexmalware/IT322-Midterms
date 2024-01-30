@@ -3,7 +3,7 @@ import 'weather_service.dart';  // Make sure to import your WeatherService class
 import 'weather_model.dart';
 
 class WeatherWidget extends StatefulWidget {
-  const WeatherWidget({Key? key}) : super(key: key);
+  const WeatherWidget({super.key});
 
   @override
   _WeatherWidgetState createState() => _WeatherWidgetState();
@@ -57,7 +57,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/weatherbg.png'),
                     fit: BoxFit.cover,
@@ -75,7 +75,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                           children: [
                             Text(
                               '${_weather?.temperature.round()}°',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 60,
                                 fontWeight: FontWeight.w700,
                                 fontFamily: 'Proxima Nova',
@@ -84,7 +84,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                             ),
                             Text(
                               getFishingSafetyMessage(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima Nova',
                                 color: Colors.white,
@@ -92,7 +92,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                             ),
                             Text(
                               'Wind: ${_weather?.windSpeed.toStringAsFixed(1)} km/h',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima Nova',
                                 color: Colors.white,
@@ -100,7 +100,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                             ),
                             Text(
                               _weather?.cityName ?? "Loading city...",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Proxima Nova',
                                 color: Color(0xFFFFAB19),
@@ -109,7 +109,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                           ],
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: double.infinity,
                         child: Transform.scale(
                           scale: 1.2,
