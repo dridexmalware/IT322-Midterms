@@ -4,6 +4,7 @@ import 'package:lawod/components/textfield.dart';
 import 'package:lawod/pages/Marketplace/Marketplace Seller/fisherfolk_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20User/categories.dart';
 
 class ConsumerAccount extends StatelessWidget {
   ConsumerAccount({Key? key});
@@ -13,74 +14,67 @@ class ConsumerAccount extends StatelessWidget {
   final TextEditingController IDNumberController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final CollectionReference usersCollection =
-  FirebaseFirestore.instance.collection('users');
-  final CollectionReference consumerCollection =
-  FirebaseFirestore.instance.collection('consumers');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<Map<String, dynamic>> getConsumerAccountData(String uid) async {
-    try {
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      await usersCollection.doc(uid).collection('accounts').doc('consumer_account').get();
+  Future<bool> _userHasCompletedConsumerRegistration(String uid) async {
+    final consumerAccountDoc = await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('accounts')
+        .doc('consumer_account')
+        .get();
 
-      if (documentSnapshot.exists) {
-        return documentSnapshot.data() ?? {};
-      } else {
-        return {};
-      }
-    } catch (error) {
-      print('Error fetching Consumer account data: $error');
-      return {};
+    if (consumerAccountDoc.exists && consumerAccountDoc.data() != null) {
+      final data = consumerAccountDoc.data()!;
+      return data['registrationComplete'] ==
+          true; // Check if registration is complete
     }
+    return false; // No consumer account document found, or registration not complete
   }
 
   Future<void> _createConsumerAccount(BuildContext context) async {
-    BuildContext currentContext = context; // Initialize currentContext
+    User? currentUser = _auth.currentUser;
 
+    if (currentUser == null) {
+      print('User not authenticated.');
+      // TODO: Navigate to login page or show an error message
+      return;
+    }
+
+    final uid = currentUser.uid;
+    final hasCompletedRegistration =
+        await _userHasCompletedConsumerRegistration(uid);
+
+    if (hasCompletedRegistration) {
+      // If registration is complete, navigate to the categories page or consumer landing page
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Categories()));
+      return;
+    }
+
+    // If the registration is not complete, create the consumer account
     try {
-      User? currentUser = _auth.currentUser;
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('accounts')
+          .doc('consumer') // Changed from 'consumer_account' to 'consumer'
+          .set({
+        'address': addressIdController.text,
+        'validId': validIdController.text,
+        'IDNumber': IDNumberController.text,
+        'registrationComplete': true, // Set the registration as complete.
+      }, SetOptions(merge: true));
 
-      if (currentUser != null) {
-        String uid = currentUser.uid;
-
-        await consumerCollection.add({
-          'uid': uid,
-          'address': addressIdController.text,
-          'validId': validIdController.text,
-          'IDNumber': IDNumberController.text,
-        });
-
-        await usersCollection
-            .doc(uid)
-            .collection('accounts')
-            .doc('consumer_account')
-            .set({
-          'uid': uid,
-          'accountType': 'consumer', // Add this line to store the account type
-          'address': addressIdController.text,
-          'validId': validIdController.text,
-          'IDNumber': IDNumberController.text,
-        });
-
-        ScaffoldMessenger.of(currentContext).showSnackBar(SnackBar(
-          content: Text('Consumer account created successfully!'),
-        ));
-
-        // Wait for account creation to complete before navigating
-        Navigator.pushReplacement(
-          currentContext,
-          MaterialPageRoute(
-            builder: (context) => FisherfolkLanding(),
-          ),
-        );
-      } else {
-        print('User not authenticated');
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Consumer account created successfully!')),
+      );
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Categories()));
     } catch (error) {
-      // Use the captured context for showing the snackbar
-      ScaffoldMessenger.of(currentContext).showSnackBar(SnackBar(
-        content: Text('Error creating Consumer account: $error'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error creating Consumer account: $error')),
+      );
       print('Error creating Consumer account: $error');
     }
   }
