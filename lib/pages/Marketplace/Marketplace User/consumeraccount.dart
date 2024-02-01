@@ -1,152 +1,169 @@
 import 'package:flutter/material.dart';
-import 'package:lawod/pages/Marketplace/Marketplace%20User/categories.dart';
+import 'package:lawod/components/button_fill.dart';
+import 'package:lawod/components/textfield.dart';
+import 'package:lawod/pages/Marketplace/Marketplace Seller/fisherfolk_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ConsumerAccount extends StatefulWidget {
-  const ConsumerAccount({super.key});
+class ConsumerAccount extends StatelessWidget {
+  ConsumerAccount({Key? key});
 
-  @override
-  State<ConsumerAccount> createState() => _ConsumerAccountState();
-}
+  final TextEditingController addressIdController = TextEditingController();
+  final TextEditingController validIdController = TextEditingController();
+  final TextEditingController IDNumberController = TextEditingController();
 
-class _ConsumerAccountState extends State<ConsumerAccount> {
-  String? selectedIdType;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CollectionReference usersCollection =
+  FirebaseFirestore.instance.collection('users');
+  final CollectionReference consumerCollection =
+  FirebaseFirestore.instance.collection('consumers');
 
-  String returnedData = '';
+  Future<Map<String, dynamic>> getConsumerAccountData(String uid) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await usersCollection.doc(uid).collection('accounts').doc('consumer_account').get();
+
+      if (documentSnapshot.exists) {
+        return documentSnapshot.data() ?? {};
+      } else {
+        return {};
+      }
+    } catch (error) {
+      print('Error fetching Consumer account data: $error');
+      return {};
+    }
+  }
+
+  Future<void> _createConsumerAccount(BuildContext context) async {
+    BuildContext currentContext = context; // Initialize currentContext
+
+    try {
+      User? currentUser = _auth.currentUser;
+
+      if (currentUser != null) {
+        String uid = currentUser.uid;
+
+        await consumerCollection.add({
+          'uid': uid,
+          'address': addressIdController.text,
+          'validId': validIdController.text,
+          'IDNumber': IDNumberController.text,
+        });
+
+        await usersCollection
+            .doc(uid)
+            .collection('accounts')
+            .doc('consumer_account')
+            .set({
+          'uid': uid,
+          'accountType': 'consumer', // Add this line to store the account type
+          'address': addressIdController.text,
+          'validId': validIdController.text,
+          'IDNumber': IDNumberController.text,
+        });
+
+        ScaffoldMessenger.of(currentContext).showSnackBar(SnackBar(
+          content: Text('Consumer account created successfully!'),
+        ));
+
+        // Wait for account creation to complete before navigating
+        Navigator.pushReplacement(
+          currentContext,
+          MaterialPageRoute(
+            builder: (context) => FisherfolkLanding(),
+          ),
+        );
+      } else {
+        print('User not authenticated');
+      }
+    } catch (error) {
+      // Use the captured context for showing the snackbar
+      ScaffoldMessenger.of(currentContext).showSnackBar(SnackBar(
+        content: Text('Error creating Consumer account: $error'),
+      ));
+      print('Error creating Consumer account: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
-          icon: const Icon(Icons.arrow_back_ios, size: 20.0),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          color: const Color.fromRGBO(79, 79, 79, 1),
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
       ),
-      extendBodyBehindAppBar: true,
-      body: Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 80),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                'Consumer Account',
-                style: TextStyle(
-                  color: Color.fromRGBO(25, 109, 255, 1),
-                  fontFamily: 'Proxima',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 34,
-                ),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Reel in the best deals from local fishers!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Proxima',
-                  color: Color.fromRGBO(79, 79, 79, 1),
-                  fontSize: 17,
-                ),
-              ),
-              const SizedBox(height: 60),
-              SizedBox(
-                width: 300,
-                height: 60,
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    labelText: 'Address',
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  'Consumer Account',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 34,
+                    color: Color(0xFF196DFF),
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Proxima Nova',
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 300,
-                height: 60,
-                child: DropdownButtonFormField<String>(
-                  value: selectedIdType,
-                  decoration: InputDecoration(
-                    hintText: 'Valid Identification Card',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                const Text(
+                  'Reel in the best deals from local fishers',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 17,
+                    height: 1.2,
+                    color: Color(0xFF4F4F4F),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'Proxima Nova',
                   ),
-                  items: <String>[
-                    'Driver\'s License',
-                    'Passport',
-                    'ID Card',
-                    'Others'
-                  ].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? value) {
-                    setState(() {
-                      selectedIdType = value;
-                    });
+                ),
+                const SizedBox(height: 40),
+                LawodTextField(
+                  controller: addressIdController,
+                  hintText: 'Address',
+                  obscureText: false,
+                ),
+                const SizedBox(height: 15),
+                LawodTextField(
+                  controller: validIdController,
+                  hintText: 'Valid Identification Card',
+                  obscureText: false,
+                ),
+                const SizedBox(height: 15),
+                LawodTextField(
+                  controller: IDNumberController,
+                  hintText: 'ID Number',
+                  obscureText: false,
+                ),
+                const SizedBox(height: 40),
+                LawodButtonFill(
+                  onPressed: () {
+                    try {
+                      // Wait for account creation to complete before navigating
+                      _createConsumerAccount(context);
+                    } catch (error) {
+                      // Handle any unexpected errors
+                      print('Unexpected error: $error');
+                    }
                   },
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 300,
-                height: 60,
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    labelText: 'ID Number',
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 300,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    var result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Categories()),
-                    );
-                    setState(() {
-                      returnedData = result;
-                    });
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color.fromRGBO(25, 109, 255, 1)),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                  ),
                   child: const Text(
                     'Create Account',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Proxima',
-                      fontSize: 18,
-                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

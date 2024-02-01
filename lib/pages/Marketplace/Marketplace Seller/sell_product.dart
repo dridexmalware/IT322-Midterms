@@ -4,10 +4,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lawod/components/bottomnav.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
-import 'package:lawod/pages/Marketplace/marketplace.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/view_products.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import '../marketplace.dart';
 
 class SellProduct extends StatefulWidget {
-  const SellProduct({super.key});
+  const SellProduct({Key? key}) : super(key: key);
 
   @override
   State<SellProduct> createState() => _SellProductState();
@@ -33,10 +36,64 @@ class _SellProductState extends State<SellProduct> {
     });
   }
 
-  void submitSellForm() {
-    if (_formKey.currentState!.validate()) {
+  Future<void> uploadImage(String productId) async {
+    try {
+      if (image != null) {
+        File imageFile = File(image!.path);
+        String fileName = 'product_images/$productId.png';
+
+        // Upload image to Firebase Storage
+        await FirebaseStorage.instance.ref(fileName).putFile(imageFile);
+
+        // Get download URL
+        String downloadURL =
+        await FirebaseStorage.instance.ref(fileName).getDownloadURL();
+
+        // Store the download URL in Firestore
+        await FirebaseFirestore.instance
+            .collection('products')
+            .doc(productId)
+            .update({'imageUrl': downloadURL});
+      }
+    } catch (error) {
+      print('Error uploading image: $error');
     }
   }
+
+  Future<void> submitSellForm() async {
+    if (_formKey.currentState!.validate()) {
+      Map<String, dynamic> productData = {
+        'productName': productName,
+        'productPrice': productPrice,
+        'category': category,
+        'productStock': productStock,
+        // Add more fields as needed
+      };
+
+      try {
+        // Add product data to Firestore and get the document ID
+        DocumentReference productRef = await FirebaseFirestore.instance.collection('products').add(productData);
+        String productId = productRef.id;
+
+        // Upload image to Firebase Storage and update Firestore with the image URL
+        await uploadImage(productId);
+
+        // Show a success message or navigate to another screen
+        print('Product added successfully!');
+
+        // Navigate to the View Products screen and replace the current screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ViewProducts()),
+        );
+      } catch (error) {
+        // Handle errors, e.g., show an error message
+        print('Error adding product: $error');
+      }
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

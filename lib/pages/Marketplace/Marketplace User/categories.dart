@@ -5,6 +5,8 @@ import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20User/fish.dart';
 import 'package:lawod/pages/Marketplace/marketplace.dart';
 
+import '../../../components/shared_datamanager.dart';
+
 class Categories extends StatefulWidget {
   const Categories({super.key});
 
@@ -97,8 +99,9 @@ class _CategoriesState extends State<Categories> {
           mainAxisSpacing: 8,
           childAspectRatio: 1 / 1.2,
         ),
-        itemCount: products.length,
+        itemCount: SharedDataManager.productList.length,
         itemBuilder: (context, index) {
+          // Use SharedDataManager.productList[index] for each product
           return GestureDetector(
             onTap: () {
               if (products[index]['productName'] == 'Fish') {

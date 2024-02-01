@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "526075560369",
+    "project_id": "lawod-c5c76",
+    "storage_bucket": "lawod-c5c76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526075560369:android:0098a8801d3eff479dfd90",
+        "android_client_info": {
+          "package_name": "com.example.lawod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "526075560369-hv9a8rqvdeuc3ea28kthju4794rnqaa8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lawod",
+            "certificate_hash": "998acabf411735baac99c36b9fa216c97d102acd"
+          }
+        },
+        {
+          "client_id": "526075560369-p1uhspb6b8qelnldticg8oqshl5utsu7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOCO3R1XdVwEzuua--1GnioQ-_70Tf4Zo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "526075560369-p1uhspb6b8qelnldticg8oqshl5utsu7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "526075560369-el0hdgeup5pgoqibof7d5g7g8tl4i9rd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lawod"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

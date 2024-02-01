@@ -103,7 +103,7 @@ class _CommunityState extends State<Community> {
                   height: 60,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const NewsFeed()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const NewsFeed(userId: '',)));
                     },
                     style: ButtonStyle(
                       backgroundColor:

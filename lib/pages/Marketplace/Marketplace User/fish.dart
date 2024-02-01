@@ -4,9 +4,11 @@ import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20User/item.dart';
 import 'package:lawod/pages/Marketplace/marketplace.dart';
+import 'package:lawod/components/shared_datamanager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Fish extends StatefulWidget {
-  const Fish({super.key});
+  const Fish({Key? key});
 
   @override
   State<Fish> createState() => _FishState();
@@ -17,33 +19,7 @@ class _FishState extends State<Fish> {
   final int _currentIndex = 1;
 
   String returnedData = '';
-
-  List<Map<String, String>> fishproducts = [
-    {
-      'productName': 'Bangus',
-      'pricePerKilo': '₱ 150/kilo',
-    },
-    {
-      'productName': 'Tilapia',
-      'pricePerKilo': '₱ 180/kilo',
-    },
-    {
-      'productName': 'Bodboron',
-      'pricePerKilo': '₱ 250/kilo',
-    },
-    {
-      'productName': 'Tangigue',
-      'pricePerKilo': '₱ 350/kilo',
-    },
-    {
-      'productName': 'Bulinaw',
-      'pricePerKilo': '₱ 80/kilo',
-    },
-    {
-      'productName': 'Tuna',
-      'pricePerKilo': '₱ 450/kilo',
-    },
-  ];
+  List<Map<String, dynamic>> fishProducts = [];
 
   final List<String> fishImages = [
     'assets/images/marketplace/user/fish/bangus.png',
@@ -53,6 +29,24 @@ class _FishState extends State<Fish> {
     'assets/images/marketplace/user/fish/bulinaw.png',
     'assets/images/marketplace/user/fish/tuna.png',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFishProducts();
+  }
+
+  Future<void> _loadFishProducts() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+      await FirebaseFirestore.instance.collection('products').where('category', isEqualTo: 'Fish').get();
+
+      fishProducts = querySnapshot.docs.map((doc) => doc.data()).toList();
+      setState(() {});
+    } catch (e) {
+      print('Error fetching fish products: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,8 +110,7 @@ class _FishState extends State<Fish> {
                 ),
                 DropdownButton<String>(
                   onChanged: (String? newValue) {},
-                  items:
-                      ['Filter'].map<DropdownMenuItem<String>>((String value) {
+                  items: ['Filter'].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -137,13 +130,15 @@ class _FishState extends State<Fish> {
                 mainAxisSpacing: 8,
                 childAspectRatio: 1 / 1.2,
               ),
-              itemCount: fishproducts.length,
+              itemCount: fishProducts.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () async {
                     var result = await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Item()),
+                      MaterialPageRoute(
+                        builder: (context) => Item(productData: fishProducts[index], productId: '',),
+                      ),
                     );
                     setState(() {
                       returnedData = result;
@@ -167,7 +162,10 @@ class _FishState extends State<Fish> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 16, top: 12, right: 16),
+                            left: 16,
+                            top: 12,
+                            right: 16,
+                          ),
                           child: Container(
                             height: 120,
                             decoration: BoxDecoration(
@@ -180,7 +178,7 @@ class _FishState extends State<Fish> {
                         Padding(
                           padding: const EdgeInsets.only(top: 4, left: 16),
                           child: Text(
-                            fishproducts[index]['productName']!,
+                            fishProducts[index]['productName'] ?? '',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -191,7 +189,7 @@ class _FishState extends State<Fish> {
                         Padding(
                           padding: const EdgeInsets.only(top: 4, left: 16),
                           child: Text(
-                            fishproducts[index]['pricePerKilo']!,
+                            fishProducts[index]['pricePerKilo'] ?? '',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -212,14 +210,11 @@ class _FishState extends State<Fish> {
         currentIndex: _currentIndex,
         onTap: (index) {
           if (index == 0) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Community()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const Community()));
           } else if (index == 1) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MarketPlace()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const MarketPlace()));
           } else if (index == 2) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const UserAccount()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const UserAccount()));
           }
         },
       ),

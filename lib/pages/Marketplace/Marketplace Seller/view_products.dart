@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lawod/components/bottomnav.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/product_details.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/marketplace.dart';
-import 'product_details.dart';
-
 
 class ViewProducts extends StatefulWidget {
+  final int _currentIndex = 1;
+
   const ViewProducts({super.key});
 
   @override
@@ -14,43 +16,36 @@ class ViewProducts extends StatefulWidget {
 }
 
 class _ViewProductsState extends State<ViewProducts> {
-  final int _currentIndex = 1;
+  String dropdownValue = 'Descending Price'; // Declare dropdownValue here
+  List<Map<String, dynamic>> products = []; // Declare products here
 
-  String dropdownValue = 'Descending Price';
-  List<Map<String, String>> products = [
-    {
-      'productName': 'Bangus',
-      'pricePerKilo': '₱ 150/kilo',
-      'productImage': 'https://drive.google.com/uc?export=view&id=1g7L3TM13_C05HKLNKXDbSkitobMc_-ov',
-    },
-    {
-      'productName': 'Tilapia',
-      'pricePerKilo': '₱ 180/kilo',
-      'productImage': 'https://drive.google.com/uc?export=view&id=1xEDEFW_GDtPycbWw8UiUEnBfDL3q_vOH',
-    },
-    {
-      'productName': 'Malangasi',
-      'pricePerKilo': '₱ 186/kilo',
-      'productImage': 'https://drive.google.com/uc?export=view&id=1vGMoneib1Ajy3p5TBm334pFjgGgtO0uf',
-    },
-    {
-      'productName': 'Ulang',
-      'pricePerKilo': '₱ 190/kilo',
-      'productImage': 'https://drive.google.com/uc?export=view&id=1rZMVViBO9S8RQ2Av3NSdd5mxACHsRIIo',
-    },
-    {
-      'productName': 'Nokus',
-      'pricePerKilo': '₱ 200/kilo',
-      'productImage': 'https://drive.google.com/uc?export=view&id=1_QrZ4dlfXJW93HX6OV1Ol1wKBV0t3g8l',
-    },
-    {
-      'productName': 'Puluan',
-      'pricePerKilo': '₱ 300/kilo',
-      'productImage': 'https://drive.google.com/uc?export=view&id=13eoSq63JehWqiX2LW6dkEkx_XkPi8SdU',
-    },
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
 
+  Future<void> fetchProducts() async {
+    // Fetch products from Firestore (replace 'products' with your actual collection name)
+    QuerySnapshot productSnapshot =
+    await FirebaseFirestore.instance.collection('products').get();
 
-  ];
+    // Convert Firestore data to a list of Map<String, dynamic>
+    List<Map<String, dynamic>> updatedProducts =
+    productSnapshot.docs.map((DocumentSnapshot document) {
+      return {
+        'productName': document['productName'],
+        'pricePerKilo': '₱ ${document['productPrice']}/kilo',
+        'productImage': document['imageUrl'],
+        // Add more fields as needed
+      };
+    }).toList();
+
+    // Update the state to trigger a rebuild with the new product data
+    setState(() {
+      products = updatedProducts;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +88,8 @@ class _ViewProductsState extends State<ViewProducts> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: dropdownValue,
-                      style: const TextStyle(color: Color(0xFFA7A9BE), fontSize: 16),
+                      style:
+                      const TextStyle(color: Color(0xFFA7A9BE), fontSize: 16),
                       onChanged: (String? newValue) {
                         setState(() {
                           dropdownValue = newValue!;
@@ -125,8 +121,12 @@ class _ViewProductsState extends State<ViewProducts> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
+                    // Pass the product data to the ProductDetailsPage screen
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const EditProduct()),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailsPage(productData: products[index]),
+                      ),
                     );
                   },
                   child: buildProductItem(products[index]),
@@ -137,24 +137,24 @@ class _ViewProductsState extends State<ViewProducts> {
         ),
       ),
       bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
+        currentIndex: widget._currentIndex,
         onTap: (index) {
           if (index == 0) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Community()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => const Community()));
           } else if (index == 1) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MarketPlace()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => const MarketPlace()));
           } else if (index == 2) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const UserAccount()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => const UserAccount()));
           }
         },
       ),
     );
   }
 
-  Widget buildProductItem(Map<String, String> product) {
+  Widget buildProductItem(Map<String, dynamic> product) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -180,7 +180,7 @@ class _ViewProductsState extends State<ViewProducts> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product['productName'] ?? '',
+                  product['productName'] ?? 'No Name',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -189,7 +189,7 @@ class _ViewProductsState extends State<ViewProducts> {
                   ),
                 ),
                 Text(
-                  product['pricePerKilo'] ?? '',
+                  product['pricePerKilo'] ?? 'No Price',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -206,58 +206,24 @@ class _ViewProductsState extends State<ViewProducts> {
 }
 
 class ProductDetailsPage extends StatelessWidget {
-  final Map<String, String> productData;
+  final Map<String, dynamic> productData;
 
-  const ProductDetailsPage({super.key, required this.productData});
+  const ProductDetailsPage({Key? key, required this.productData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Product Details',
-          style: TextStyle(
-            color: Color(0xFF196DFF),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Image.network(
-              productData['productImage'] ?? '',
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditProduct(initialProductData: productData),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    productData['productName'] ?? '',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    productData['pricePerKilo'] ?? '',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Color(0xFF196DFF),
-                    ),
-                  ),
-                  // Add more details here...
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
+        child: Icon(Icons.edit),
       ),
     );
   }

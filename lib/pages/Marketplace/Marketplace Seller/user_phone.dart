@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lawod/components/bottomnav.dart';
-import 'package:lawod/main.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_info.dart';
@@ -23,43 +22,19 @@ class _UserPhoneNumber extends State<UserPhoneNumber> {
   @override
   void initState() {
     super.initState();
-    fetchUserData();
+    // Commenting out the Supabase-related function call
+    // fetchUserData();
   }
 
-  Future<void> fetchUserData() async {
-    final user = supabase.auth.currentUser;
+  // Commenting out the Supabase-related function
+  // Future<void> fetchUserData() async {
+  //   // ...
+  // }
 
-    if (user != null) {
-      final response = await supabase
-          .from('useracc')
-          .select()
-          .eq('email', user.email as Object)
-          .single();
-
-      // ignore: unnecessary_null_comparison
-      if (response != null && response != null) {
-        setState(() {
-          userData = response;
-        });
-
-        // Print the user data for debugging
-        // ignore: avoid_print
-        print('User Data: $userData');
-      }
-    }
-  }
-
-  Future<void> updateUserData(String newUserPhoneNumber) async {
-    final user = supabase.auth.currentUser;
-
-    if (user != null) {
-      await supabase
-          .from('useracc')
-          .update({'phonenumber': newUserPhoneNumber})
-          .eq('email', user.email as Object)
-          .single();
-    }
-  }
+  // Commenting out the Supabase-related function
+  // Future<void> updateUserData(String newUserPhoneNumber) async {
+  //   // ...
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +72,10 @@ class _UserPhoneNumber extends State<UserPhoneNumber> {
                   style: TextStyle(fontSize: 20, color: Color(0xFF4F4F4F)),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  userData?['phonenumber'] ?? 'N/A',
-                  style: const TextStyle(
+                // Placeholder for user phone number, replace as needed
+                const Text(
+                  'User Phone Number',
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF196DFF),
@@ -145,7 +121,7 @@ class _UserPhoneNumber extends State<UserPhoneNumber> {
                         return;
                       }
 
-                      updateUserData(newUserPhoneNumber);
+                      // TODO: Implement logic for saving changes without Supabase
 
                       Navigator.push(
                         context,

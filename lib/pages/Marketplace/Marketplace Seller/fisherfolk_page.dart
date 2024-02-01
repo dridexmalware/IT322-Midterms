@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lawod/components/bottomnav.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
@@ -5,20 +8,62 @@ import 'package:lawod/pages/Marketplace/Marketplace%20Seller/sell_product.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/view_orders.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/view_products.dart';
-import 'package:lawod/pages/Marketplace/marketplace.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
+import '../marketplace.dart';
+import 'fisherfolk_registration.dart';
+
 class FisherfolkLanding extends StatefulWidget {
-  const FisherfolkLanding({super.key});
+  const FisherfolkLanding({Key? key}) : super(key: key);
+
+  Future<Map<String, dynamic>> getFisherfolkAccountData(String userId) async {
+    final DocumentSnapshot<Map<String, dynamic>> userDoc =
+    await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    return userDoc.data() ?? {};
+  }
 
   @override
   State<FisherfolkLanding> createState() => _FisherfolkLandingState();
 }
 
 class _FisherfolkLandingState extends State<FisherfolkLanding> {
-  String userName =
-      'Gaga’s Fish Market';
-  final int _currentIndex = 1;
+  String userName = '';
+  String storeLocation = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch Fisherfolk account data here
+    fetchFisherfolkData();
+  }
+
+  Future<void> fetchFisherfolkData() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        Map<String, dynamic> fisherfolkData =
+        await widget.getFisherfolkAccountData(user.uid);
+
+        setState(() {
+          userName = fisherfolkData['storeName'] ?? '';
+          storeLocation = fisherfolkData['storeLocation'] ?? '';
+        });
+
+        // Check if fisherfolkData is empty or null
+        if (userName.isEmpty || storeLocation.isEmpty) {
+          // Navigate to registration page
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => FisherfolkRegistration()),
+          );
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print('Error fetching Fisherfolk data: $error');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +105,8 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
                   ); // Replace with your route
                 },
                 child: Container(
+                  padding: const EdgeInsets.fromLTRB(20, avatarRadius, 20, 20),
+                  margin: const EdgeInsets.symmetric(horizontal: 32),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       begin: Alignment.centerLeft,
@@ -71,8 +118,6 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
                     ),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: const EdgeInsets.fromLTRB(20, avatarRadius, 20, 20),
-                  margin: const EdgeInsets.symmetric(horizontal: 32),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -80,14 +125,15 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
                       Text(
                         userName,
                         style: const TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Proxima Nova',
-                            color: Colors.white),
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Proxima Nova',
+                          color: Colors.white,
+                        ),
                       ),
-                      const Text(
-                        'El Salvador City',
-                        style: TextStyle(
+                      Text(
+                        storeLocation,
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white70,
                           fontFamily: 'Proxima Nova',
@@ -201,7 +247,7 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
                         elevation: 4,
                         // Shadow elevation
                         shadowColor:
-                            Colors.grey.withOpacity(0.5), // Shadow color
+                        Colors.grey.withOpacity(0.5), // Shadow color
                       ),
                       child: const Text(
                         'Sell Now',
@@ -236,12 +282,11 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
             top: 6.5, // Adjust this value as needed
             child: CircleAvatar(
               radius: avatarRadius,
-              backgroundColor: Colors
-                  .transparent, // To match the background if there's any gap
+              backgroundColor: Colors.transparent,
               child: CircleAvatar(
-                radius: avatarRadius, // Actual avatar radius
+                radius: avatarRadius,
                 backgroundImage: NetworkImage(
-                  'https://drive.google.com/uc?export=view&id=1Dc-e2GPOpqWgumRNt8kLVp6b_ztKI2yw', // Replace with your image URL
+                  'https://drive.google.com/uc?export=view&id=1Dc-e2GPOpqWgumRNt8kLVp6b_ztKI2yw',
                 ),
               ),
             ),
@@ -249,7 +294,7 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
         ],
       ),
       bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
+        currentIndex: 1,
         onTap: (index) {
           if (index == 0) {
             Navigator.push(context,
@@ -302,14 +347,14 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
               padding: const EdgeInsets.fromLTRB(58, 25, 58, 25),
               child: Image.asset(imagePath, width: 48), // Asset image
             ),
-            Text(label,
-                style: const TextStyle(
-                    color: Color(0xFF0A1034),
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Proxima Nova',
+            Text(
+              label,
+              style: const TextStyle(
+                color: Color(0xFF0A1034),
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Proxima Nova',
               ),
             ),
-            // Text label
             const SizedBox(height: 16),
           ],
         ),
@@ -322,10 +367,11 @@ class CustomCurvedNavigationBar extends StatelessWidget {
   final int index;
   final Function(int) onNavigationTap;
 
-  const CustomCurvedNavigationBar({super.key, 
+  const CustomCurvedNavigationBar({
+    Key? key,
     required this.index,
     required this.onNavigationTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

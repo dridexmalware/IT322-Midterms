@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lawod/components/bottomnav.dart';
-import 'package:lawod/components/userprovider.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
-import 'package:lawod/pages/Marketplace/Marketplace Seller/user_info.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_info.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
-import 'package:lawod/pages/Marketplace/marketplace.dart';
-import 'package:provider/provider.dart';
+
+import '../marketplace.dart';
 
 class UserFullName extends StatefulWidget {
   const UserFullName({super.key});
@@ -55,12 +54,14 @@ class _UserFullName extends State<UserFullName> {
                   style: TextStyle(fontSize: 20, color: Color(0xFF4F4F4F)),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  '${context.watch<UserProvider>().firstName} ${context.watch<UserProvider>().lastName}',
-                  style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF196DFF)),
+                // Placeholder for user full name, replace as needed
+                const Text(
+                  'User Full Name',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF196DFF),
+                  ),
                 ),
                 const SizedBox(height: 64),
                 TextFormField(
@@ -99,16 +100,7 @@ class _UserFullName extends State<UserFullName> {
 
                       if (newFullName.isNotEmpty &&
                           newFullName == confirmFullName) {
-                        final List<String> nameParts = newFullName.split(' ');
-                        final String newFirstName = nameParts.first;
-                        final String newLastName =
-                            nameParts.length > 1 ? nameParts.last : '';
-                        context
-                            .read<UserProvider>()
-                            .changeFirstName(newFirstName: newFirstName);
-                        context
-                            .read<UserProvider>()
-                            .changeLastName(newLastName: newLastName);
+                        // TODO: Implement logic for saving changes without UserProvider
 
                         FocusManager.instance.primaryFocus?.unfocus();
                         newFullNameController.clear();

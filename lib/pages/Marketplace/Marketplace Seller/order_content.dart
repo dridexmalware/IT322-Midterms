@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:lawod/components/bottomnav.dart';
-import 'package:lawod/pages/Community%20Support/community.dart';
-import 'package:lawod/pages/Marketplace/Marketplace%20Seller/customer_details.dart';
-import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
-import 'package:lawod/pages/Marketplace/marketplace.dart';
+import 'customer_details.dart';
+import 'fisherfolk_page.dart';
 
 class OrderContent extends StatefulWidget {
-  const OrderContent({super.key});
-
   @override
-  State<OrderContent> createState() => _OrderContentState();
+  _OrderContentState createState() => _OrderContentState();
 }
 
 class _OrderContentState extends State<OrderContent> {
-  final int _currentIndex = 1;
+  int _currentIndex = 0;
+
+  void _handleNavigationTap(int index) {
+    setState(() {
+      _currentIndex = index;
+      // Handle navigation logic here
+    });
+  }
 
   // Dummy data for the order details
   Map<String, dynamic> orderDetails = {
     'images': [
-      'https://drive.google.com/uc?export=view&id=1g7L3TM13_C05HKLNKXDbSkitobMc_-ov',
-      'https://drive.google.com/uc?export=view&id=1xEDEFW_GDtPycbWw8UiUEnBfDL3q_vOH',
+      'https://drive.google.com/uc?export=view&id=1g7L3TM13_C05HKLNKXDbSkitobMc_-ov', // Network image URLs
+      'https://drive.google.com/uc?export=view&id=1xEDEFW_GDtPycbWw8UiUEnBfDL3q_vOH', // Add more images as needed
     ],
     'items': [
       {'name': 'Bangus', 'quantity': '1/2 kl.', 'price': '₱ 75'},
@@ -36,7 +38,7 @@ class _OrderContentState extends State<OrderContent> {
         title: const Text(
           'Order Details',
           style: TextStyle(
-            color: Color(0xFF196DFF),
+            color: Color(0xFF196DFF), // Blue color for the title
             fontWeight: FontWeight.bold,
             fontSize: 30,
             fontFamily: 'Proxima Nova',
@@ -58,11 +60,12 @@ class _OrderContentState extends State<OrderContent> {
           children: [
             const SizedBox(height: 20),
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 2),
+              margin: EdgeInsets.symmetric(horizontal: 32, vertical: 2),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              clipBehavior: Clip.hardEdge,
+              clipBehavior: Clip
+                  .hardEdge, // Ensures the image doesn't bleed outside the border radius
               child: SizedBox(
                 height: 200,
                 child: PageView.builder(
@@ -75,20 +78,19 @@ class _OrderContentState extends State<OrderContent> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(16.0),
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+              padding: EdgeInsets.all(16.0),
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => const CustomerDetails()),
+                    MaterialPageRoute(builder: (context) => CustomerDetails()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE0ECF8),
-                  foregroundColor: const Color(0xFF0A1034),
+                  backgroundColor: Color(0xFFE0ECF8), // Button background color
+                  foregroundColor: Color(0xFF0A1034), // Button text color
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
                     'View Customer Details',
                     style: TextStyle(
@@ -102,17 +104,16 @@ class _OrderContentState extends State<OrderContent> {
               ),
             ),
             Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
-              padding: const EdgeInsets.all(16.0),
+              margin: EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
+              padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: const Color(0xFF196DFF),
+                color: Color(0xFF196DFF),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
@@ -133,7 +134,7 @@ class _OrderContentState extends State<OrderContent> {
                                   fontWeight: FontWeight.bold))),
                     ],
                   ),
-                  const Divider(color: Colors.white),
+                  Divider(color: Colors.white),
                   ...orderDetails['items']
                       .map((item) => Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -142,58 +143,54 @@ class _OrderContentState extends State<OrderContent> {
                               children: [
                                 Expanded(
                                     child: Text('${item['quantity']}',
-                                        style: const TextStyle(
-                                            color: Colors.white))),
+                                        style: TextStyle(color: Colors.white))),
                                 Expanded(
                                     child: Text('${item['name']}',
-                                        style: const TextStyle(
-                                            color: Colors.white))),
+                                        style: TextStyle(color: Colors.white))),
                                 Expanded(
                                     child: Text('${item['price']}',
                                         textAlign: TextAlign.end,
-                                        style: const TextStyle(
-                                            color: Colors.white))),
+                                        style: TextStyle(color: Colors.white))),
                               ],
                             ),
                           ))
                       .toList(),
-                  const Divider(color: Color(0xFF196DFF)),
-                  const Padding(
+                  Divider(color: Color(0xFF196DFF)),
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text('Mode of Payment:',
                         style: TextStyle(color: Colors.white)),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 4.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE0ECF8),
+                      color: Color(0xFFE0ECF8),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.check,
-                            color: Color(0xFF1F53E4), size: 24),
-                        const SizedBox(width: 8.0),
+                        Icon(Icons.check, color: Color(0xFF1F53E4), size: 24),
+                        SizedBox(width: 8.0),
                         Text(orderDetails['paymentMethod'],
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: Color(0xFF1F53E4),
                                 fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
-                  const Divider(color: Color(0xFF196DFF)),
+                  Divider(color: Color(0xFF196DFF)),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16.0),
                     ),
                     child: Text('Total: ${orderDetails['totalPrice']}',
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: Color(0xFF0A1034),
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
@@ -204,20 +201,9 @@ class _OrderContentState extends State<OrderContent> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Community()));
-          } else if (index == 1) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MarketPlace()));
-          } else if (index == 2) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const UserAccount()));
-          }
-        },
+      bottomNavigationBar: CustomCurvedNavigationBar(
+        index: _currentIndex,
+        onNavigationTap: _handleNavigationTap,
       ),
     );
   }

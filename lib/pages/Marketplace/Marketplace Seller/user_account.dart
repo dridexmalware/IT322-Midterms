@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lawod/components/bottomnav.dart';
-import 'package:lawod/main.dart';
-import 'package:lawod/pages/Community%20Support/community.dart';
-import 'package:lawod/pages/Marketplace/marketplace.dart';
 import 'user_info.dart';
 
 class UserAccount extends StatefulWidget {
@@ -13,61 +9,34 @@ class UserAccount extends StatefulWidget {
 }
 
 class _UserAccountState extends State<UserAccount> {
-  String userName = 'Gaga’s Fish Market';
-  final int _currentIndex = 1;
+  String userName =
+      'Gaga’s Fish Market'; // Example username, replace with your dynamic data
 
   Map<String, dynamic>? userData;
 
-  @override
-  void initState() {
-    super.initState();
-    fetchUserData();
-  }
-
-  Future<void> fetchUserData() async {
-    final user = supabase.auth.currentUser;
-
-    if (user != null) {
-      final response = await supabase
-          .from('useracc')
-          .select()
-          .eq('email', user.email as Object)
-          .single();
-
-      // ignore: unnecessary_null_comparison
-      if (response != null && response != null) {
-        setState(() {
-          userData = response;
-        });
-        // ignore: avoid_print
-        print('User Data: $userData');
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    const double avatarRadius = 65.0;
+    final double avatarRadius = 65.0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF196DFF),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(size: 20.0),
-        leading: IconButton(
-          padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () async {
-            Navigator.of(context).pop();
-          },
-          color: Colors.white,
+        backgroundColor: const Color(0xFF196DFF),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: const IconThemeData(size: 20.0),
+          leading: IconButton(
+            padding: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+            color: Colors.white,
+          ),
         ),
-      ),
-      extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
+        extendBodyBehindAppBar: true,
+        body: SingleChildScrollView(
+          child: Stack(children: [
             Positioned.fill(
               child: Image.asset(
                 'assets/images/marketplace/background.png',
@@ -133,7 +102,8 @@ class _UserAccountState extends State<UserAccount> {
                                     'assets/images/marketplaceseller/help.png'),
                               ],
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(
+                                height: 20), // Additional space at the bottom
                           ],
                         ),
                       ),
@@ -141,13 +111,14 @@ class _UserAccountState extends State<UserAccount> {
                   ],
                 ),
                 Positioned(
-                  top: MediaQuery.of(context).size.height * 0.16,
-                  child: const CircleAvatar(
+                  top: MediaQuery.of(context).size.height *
+                      0.16, // Adjusted for the screen size
+                  child: CircleAvatar(
                     radius: avatarRadius,
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
-                      radius: avatarRadius - 5,
-                      backgroundImage: NetworkImage(
+                      radius: avatarRadius - 5, // Small white border
+                      backgroundImage: const NetworkImage(
                         'https://drive.google.com/uc?export=view&id=1Dc-e2GPOpqWgumRNt8kLVp6b_ztKI2yw',
                       ),
                     ),
@@ -155,10 +126,8 @@ class _UserAccountState extends State<UserAccount> {
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
+          ]),
+        ));
   }
 
   Widget _buildCard(BuildContext context, String title, String imagePath) {

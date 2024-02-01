@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lawod/components/supabase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lawod/components/textfield.dart';
 import 'package:lawod/pages/login_page.dart';
+
 
 class SignUpPage extends StatelessWidget {
   SignUpPage({super.key});
@@ -11,7 +13,12 @@ class SignUpPage extends StatelessWidget {
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final phonenumberController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  bool isFisherfolk = true;
 
   @override
   Widget build(BuildContext context) {
@@ -89,32 +96,57 @@ class SignUpPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 15),
                 LawodTextField(
-                  controller: phonenumberController,
+                  controller: phoneNumberController,
                   hintText: 'Phone Number',
                   obscureText: false,
                 ),
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () async {
-                    if (firstnameController.text.isEmpty ||
-                        lastnameController.text.isEmpty ||
-                        usernameController.text.isEmpty ||
-                        emailController.text.isEmpty ||
-                        passwordController.text.isEmpty ||
-                        phonenumberController.text.isEmpty) {
-                      return;
-                    }
-
                     try {
+                      UserCredential userCredential =
+                      await _auth.createUserWithEmailAndPassword(
+                        email: emailController.text,
+                        password: passwordController.text,
+                      );
+                      print('User created: ${userCredential.user?.email}');
 
-                      final firstName = firstnameController.text;
-                      final lastName = lastnameController.text;
-                      final username = usernameController.text;
-                      final email = emailController.text;
-                      final password = passwordController.text;
-                      final phoneNumber = phonenumberController.text;
+                      // Common user data
+                      await _firestore
+                          .collection('users')
+                          .doc(userCredential.user?.uid)
+                          .set({
+                        'email': emailController.text,
+                        'first_name': firstnameController.text,
+                        'last_name': lastnameController.text,
+                        'phone_number': phoneNumberController.text,
+                        'username': usernameController.text,
+                      });
 
-                      SupabaseHandler().addData(firstName, lastName, username, email, password, phoneNumber);
+                      // Check user type and create corresponding account document
+                      await _firestore
+                          .collection('users')
+                          .doc(userCredential.user?.uid)
+                          .collection('accounts')
+                          .doc('fisherfolk')
+                          .set({
+                        'fishermanId': '',
+                        'boatId': '',
+                        'storeName': '',
+                        'storeLocation': '',
+                      });
+
+                      await _firestore
+                          .collection('users')
+                          .doc(userCredential.user?.uid)
+                          .collection('accounts')
+                          .doc('consumer')
+                          .set({
+                        'address': '',
+                        'validId': '',
+                        'IDNumber': '',
+                      });
+
 
                       Navigator.pushReplacement(
                         context,
@@ -122,9 +154,10 @@ class SignUpPage extends StatelessWidget {
                           builder: (context) => LoginPage(),
                         ),
                       );
-                    } catch (error) {
-                      // ignore: avoid_print
-                      print('Unexpected error: $error');
+                    } catch (e) {
+                      // Handle account creation errors
+                      print('Error creating user: $e');
+                      // You can display an error message to the user here
                     }
                   },
                   style: ElevatedButton.styleFrom(

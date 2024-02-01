@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lawod/pages/Marketplace/Marketplace Seller/fisherfolk_registration.dart';
-import 'package:lawod/pages/Marketplace/Marketplace%20User/consumeraccount.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/fisherfolk_page.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20Seller/fisherfolk_registration.dart';
+import '../../components/button_fill.dart';
+import '../../components/button_line.dart';
 import '../homescreen_page.dart';
-import 'package:lawod/components/button_fill.dart';
-import 'package:lawod/components/button_line.dart';
 
 class MarketPlace extends StatefulWidget {
-  const MarketPlace({super.key});
+  const MarketPlace({Key? key}) : super(key: key);
 
   @override
   State<MarketPlace> createState() => _MarketPlaceState();
@@ -14,6 +16,61 @@ class MarketPlace extends StatefulWidget {
 
 class _MarketPlaceState extends State<MarketPlace> {
   late String returnedData = '';
+
+  Future<void> _navigateToCorrectScreen(String s) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    print(user);
+    if (user != null) {
+      try {
+        // Check if consumer account exists
+        DocumentSnapshot<Map<String, dynamic>> consumerSnapshot =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('accounts')
+            .doc('consumer_account')
+            .get();
+
+        // Check if fisherfolk account exists
+        DocumentSnapshot<Map<String, dynamic>> fisherfolkSnapshot =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('accounts')
+            .doc('fisherfolk_account')
+            .get();
+
+        if (consumerSnapshot.exists || fisherfolkSnapshot.exists) {
+          // Redirect to landing page if either account exists
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FisherfolkLanding(),
+            ),
+          );
+        } else {
+          // Navigate to registration page if no account exists
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FisherfolkRegistration(),
+            ),
+          );
+        }
+      } catch (error) {
+        print('Error checking user accounts: $error');
+      }
+    } else {
+      // Handle authentication flow if no user is logged in
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MarketPlace()),
+      );
+    }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +120,7 @@ class _MarketPlaceState extends State<MarketPlace> {
                     ),
                   ),
                   width: MediaQuery.of(context).size.width,
-                  child: Column(
+                      child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -113,15 +170,7 @@ class _MarketPlaceState extends State<MarketPlace> {
                         height: 60,
                         child: LawodButtonLine(
                           onPressed: () async {
-                            var result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FisherfolkRegistration(),
-                              ),
-                            );
-                            setState(() {
-                              returnedData = result;
-                            });
+                            await _navigateToCorrectScreen('fisherfolk');
                           },
                           child: const Text(
                             'Sell Fish',
@@ -134,15 +183,7 @@ class _MarketPlaceState extends State<MarketPlace> {
                         height: 60,
                         child: LawodButtonFill(
                           onPressed: () async {
-                            var result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ConsumerAccount(),
-                              ),
-                            );
-                            setState(() {
-                              returnedData = result;
-                            });
+                            await _navigateToCorrectScreen('consumer');
                           },
                           child: const Text(
                             'Buy Fish',
@@ -160,3 +201,4 @@ class _MarketPlaceState extends State<MarketPlace> {
     );
   }
 }
+

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:lawod/components/bottomnav.dart';
-import 'package:lawod/pages/Community%20Support/community.dart';
-import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
-import 'package:lawod/pages/Marketplace/marketplace.dart';
+import 'fisherfolk_page.dart';
 
 class CustomerDetails extends StatefulWidget {
-  const CustomerDetails({super.key});
-
   @override
-  State<CustomerDetails> createState() => _CustomerDetailsState();
+  _CustomerDetailsState createState() => _CustomerDetailsState();
 }
 
 class _CustomerDetailsState extends State<CustomerDetails> {
-  final int _currentIndex = 1;
+  int _currentIndex = 0;
+
+  void _handleNavigationTap(int index) {
+    setState(() {
+      _currentIndex = index;
+      // Handle navigation logic here
+    });
+  }
 
   final Map<String, TextEditingController> controllers = {
     'Name': TextEditingController(text: 'Shandy Mae Pañares'),
@@ -33,48 +35,25 @@ class _CustomerDetailsState extends State<CustomerDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
-        title: const Text(
-          'Customer',
-          style: TextStyle(
-            color: Color(0xFF196DFF),
-            fontWeight: FontWeight.bold,
-            fontSize: 30,
-            fontFamily: 'Proxima Nova',
-          ),
+      appBar: AppBar(
+        title: Text('Customer Details', style: TextStyle(color: Color(0xFF196DFF), fontWeight: FontWeight.bold)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0xFF4F4F4F)),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20.0),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
+        elevation: 0,
       ),
       body: ListView(
-        padding: const EdgeInsets.only(top: 16.0),
+        padding: EdgeInsets.only(top: 16.0),
         children: [
           buildProductCard(),
-          ...controllers.entries.map((entry) => buildEditableField(entry.key, entry.value)),
+          ...controllers.entries.map((entry) => buildEditableField(entry.key, entry.value)).toList(),
         ],
       ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Community()));
-          } else if (index == 1) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MarketPlace()));
-          } else if (index == 2) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const UserAccount()));
-          }
-        },
+      bottomNavigationBar: CustomCurvedNavigationBar(
+        index: _currentIndex,
+        onNavigationTap: _handleNavigationTap,
       ),
     );
   }
@@ -82,10 +61,10 @@ class _CustomerDetailsState extends State<CustomerDetails> {
   Widget buildProductCard() {
     // The product card from the previous page
     return Container(
-      margin: const EdgeInsets.fromLTRB(32, 16, 32, 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.fromLTRB(32, 16, 32, 16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF196DFF),
+        color: Color(0xFF196DFF),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -99,8 +78,8 @@ class _CustomerDetailsState extends State<CustomerDetails> {
               height: 90,
             ),
           ),
-          const SizedBox(width: 16),
-          const Expanded(
+          SizedBox(width: 16),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -129,7 +108,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
 
   Widget buildEditableField(String label, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
+      padding: EdgeInsets.fromLTRB(32, 8, 32, 8),
       child: GestureDetector(
         onDoubleTap: () {
           setState(() {
@@ -142,24 +121,24 @@ class _CustomerDetailsState extends State<CustomerDetails> {
             controller: controller,
             decoration: InputDecoration(
               labelText: label,
-              labelStyle: const TextStyle(color: Color(0xFF4F4F4F)),
+              labelStyle: TextStyle(color: Color(0xFF4F4F4F)),
               fillColor: Colors.white,
               filled: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(color: Color(0xFF0A1034)),
+                borderSide: BorderSide(color: Color(0xFF0A1034)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(color: Color(0xFF0A1034)),
+                borderSide: BorderSide(color: Color(0xFF0A1034)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(color: Color(0xFF0A1034)),
+                borderSide: BorderSide(color: Color(0xFF0A1034)),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             ),
-            style: const TextStyle(color: Color(0xFF0A1034)),
+            style: TextStyle(color: Color(0xFF0A1034)),
           ),
         ),
       ),

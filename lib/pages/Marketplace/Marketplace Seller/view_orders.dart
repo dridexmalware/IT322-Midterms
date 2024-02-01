@@ -63,7 +63,7 @@ class _ViewOrdersState extends State<ViewOrders> {
           return InkWell(
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const OrderContent()),
+                MaterialPageRoute(builder: (context) => OrderContent()),
               );
             },
             child: Container(

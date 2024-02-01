@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
   final String organizationName;
 
-  const ChatScreen({super.key, required this.organizationName});
+  const ChatScreen({Key? key, required this.organizationName}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -28,11 +29,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 title: const Text('Pick from Gallery'),
                 onTap: () async {
                   final XFile? image =
-                      await _picker.pickImage(source: ImageSource.gallery);
+                  await _picker.pickImage(source: ImageSource.gallery);
                   if (image != null) {
                     _sendMessage(image.path, isImage: true);
                   }
-                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 },
               ),
@@ -41,11 +41,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 title: const Text('Take a Photo'),
                 onTap: () async {
                   final XFile? image =
-                      await _picker.pickImage(source: ImageSource.camera);
+                  await _picker.pickImage(source: ImageSource.camera);
                   if (image != null) {
                     _sendMessage(image.path, isImage: true);
                   }
-                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 },
               ),
@@ -56,7 +55,17 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void _sendMessage(String text, {bool isImage = false}) {
+  void _sendMessage(String text, {bool isImage = false}) async {
+    final Timestamp timestamp = Timestamp.now();
+    final String collectionPath = 'organizations/${widget.organizationName}/chats';
+
+    await FirebaseFirestore.instance.collection(collectionPath).add({
+      'senderId': 'yourSenderId', // Replace with the actual sender ID
+      'message': text,
+      'timestamp': timestamp,
+      'isImage': isImage,
+    });
+
     setState(() {
       _messages.add({
         'text': text,
@@ -95,7 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
       },
       child: Row(
         mainAxisAlignment:
-            sentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        sentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           Container(
             constraints: BoxConstraints(
@@ -139,7 +148,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     content,
                     style: TextStyle(
                       color: sentByMe ? Colors.black : Colors.white,
-                      fontFamily: 'Proxima',
+                      fontFamily: 'Proxima Nova',
                       fontSize: 18,
                     ),
                     softWrap: true,
@@ -150,7 +159,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   style: TextStyle(
                     color: sentByMe ? Colors.grey : Colors.white,
                     fontSize: 12,
-                    fontFamily: 'Proxima',
+                    fontFamily: 'Proxima Nova',
                   ),
                 ),
               ],
@@ -179,7 +188,7 @@ class _ChatScreenState extends State<ChatScreen> {
             widget.organizationName,
             style: const TextStyle(
               color: Color.fromRGBO(25, 109, 255, 1),
-              fontFamily: 'Proxima',
+              fontFamily: 'Proxima Nova',
               fontWeight: FontWeight.w700,
               fontSize: 34,
             ),
@@ -187,22 +196,54 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                final bool sentByMe = message['sentByMe'];
-                final String content = message['text'];
-                final DateTime time = message['time'];
-                final bool isImage = message['isImage'];
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('organizations/${widget.organizationName}/chats')
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
 
-                return _buildMessageBubble(sentByMe, content, time, isImage);
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                final List<Map<String, dynamic>> messages = snapshot.data!.docs
+                    .map((DocumentSnapshot doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  return {
+                    'text': data['message'],
+                    'sentByMe': data['senderId'] == 'yourSenderId',
+                    'time': (data['timestamp'] as Timestamp).toDate(),
+                    'isImage': data['isImage'],
+                  };
+                }).toList();
+
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final message = messages[index];
+                    final bool sentByMe = message['sentByMe'];
+                    final String content = message['text'];
+                    final DateTime time = message['time'];
+                    final bool isImage = message['isImage'];
+
+                    return _buildMessageBubble(sentByMe, content, time, isImage);
+                  },
+                );
               },
             ),
           ),
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+            const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -260,7 +301,7 @@ class _ChatScreenState extends State<ChatScreen> {
 class ImageViewScreen extends StatelessWidget {
   final String imagePath;
 
-  const ImageViewScreen({super.key, required this.imagePath});
+  const ImageViewScreen({Key? key, required this.imagePath}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

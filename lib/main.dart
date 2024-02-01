@@ -1,36 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:lawod/components/userprovider.dart';
-import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'firebase_options.dart';
 import 'pages/authentication_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-Future<void> main() async {
-  await Supabase.initialize(
-    url: "https://jygarouldipjiciutnlg.supabase.co",
-    anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5Z2Fyb3VsZGlwamljaXV0bmxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDYyMDA4NzcsImV4cCI6MjAyMTc3Njg3N30.-bxjnhydAnslNGGAtkZ3DLXUyDXiIVISeWCE13MaGBA",
-    debug: true,
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const Lawod());
+  runApp(Lawod());
 }
 
-final supabase = Supabase.instance.client;
+Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+}
 
 class Lawod extends StatelessWidget {
-  const Lawod({super.key});
+  const Lawod({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => UserProvider()),
-        ChangeNotifierProvider(create: (context) => UserData()),
-      ],
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: AuthenticationPage(),
-      ),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AuthenticationPage(),
     );
   }
 }

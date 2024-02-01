@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lawod/components/button_fill.dart';
 import 'package:lawod/components/textfield.dart';
 import 'package:lawod/pages/Marketplace/Marketplace Seller/fisherfolk_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FisherfolkRegistration extends StatelessWidget {
   FisherfolkRegistration({super.key});
@@ -10,6 +12,48 @@ class FisherfolkRegistration extends StatelessWidget {
   final TextEditingController boatIdController = TextEditingController();
   final TextEditingController storeNameController = TextEditingController();
   final TextEditingController storeLocationController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CollectionReference usersCollection =
+  FirebaseFirestore.instance.collection('users');
+  final CollectionReference fisherfolkCollection =
+  FirebaseFirestore.instance.collection('fisherfolks');
+
+  Future<void> _createFisherfolkAccount(BuildContext context) async {
+    try {
+      User? currentUser = _auth.currentUser;
+
+      if (currentUser != null) {
+        String uid = currentUser.uid;
+
+        // Update the fisherfolk account data
+        await usersCollection
+            .doc(uid)
+            .collection('accounts')
+            .doc('fisherfolk_account')
+            .set({
+          'uid': uid,
+          'accountType': 'fisherfolk', // Add this line to store the account type
+          'fishermanId': fishermanIdController.text,
+          'boatId': boatIdController.text,
+          'storeName': storeNameController.text,
+          'storeLocation': storeLocationController.text,
+        });
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const FisherfolkLanding(),
+          ),
+        );
+      } else {
+        print('User not authenticated');
+      }
+    } catch (error) {
+      print('Error creating Fisherfolk account: $error');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,16 +127,8 @@ class FisherfolkRegistration extends StatelessWidget {
                 LawodButtonFill(
                   onPressed: () {
                     try {
-                      // Your logic to handle the button press
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FisherfolkLanding(),
-                        ),
-                      );
+                      _createFisherfolkAccount(context);
                     } catch (error) {
-                      // Handle any unexpected errors
-                      // ignore: avoid_print
                       print('Unexpected error: $error');
                     }
                   },

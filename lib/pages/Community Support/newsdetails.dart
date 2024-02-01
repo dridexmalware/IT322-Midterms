@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lawod/components/bottomnav.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
@@ -9,7 +10,7 @@ import 'chat.dart';
 class NewsDetailPage extends StatefulWidget {
   final NewsTile newsTile;
 
-  const NewsDetailPage(this.newsTile, {super.key});
+  const NewsDetailPage(this.newsTile, {Key? key}) : super(key: key);
 
   @override
   State<NewsDetailPage> createState() => _NewsDetailPageState();
@@ -37,12 +38,16 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
               color: textColor,
               fontSize: 12.0,
               fontWeight: FontWeight.w600,
-              fontFamily: 'Proxima',
+              fontFamily: 'Proxima Nova',
             ),
           ),
         ],
       ),
     );
+  }
+
+  String getFormattedDate(DateTime timestamp) {
+    return DateFormat('MMMM d, y H:mm').format(timestamp);
   }
 
   @override
@@ -59,14 +64,13 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           color: const Color.fromRGBO(79, 79, 79, 1),
         ),
         titleSpacing: 0,
-        title: 
-        Text(
-            widget.newsTile.title,
-            style: const TextStyle(
-              color: Color.fromRGBO(25, 109, 255, 1),
-              fontFamily: 'Proxima',
-              fontWeight: FontWeight.w700,
-              fontSize: 34,
+        title: Text(
+          widget.newsTile.title,
+          style: const TextStyle(
+            color: Color.fromRGBO(25, 109, 255, 1),
+            fontFamily: 'Proxima Nova',
+            fontWeight: FontWeight.w700,
+            fontSize: 34,
           ),
         ),
       ),
@@ -76,12 +80,14 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(
-                widget.newsTile.imagePath,
+              Image.network(
+                widget.newsTile.imageUrl,
                 width: MediaQuery.of(context).size.width,
                 height: 200.0,
                 fit: BoxFit.cover,
               ),
+
+
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
@@ -89,29 +95,44 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18.0,
-                    fontFamily: 'Proxima',
+                    fontFamily: 'Proxima Nova',
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align items to the space between
                   children: [
-                    const Icon(Icons.remove_red_eye,
-                        size: 16.0, color: Colors.black),
-                    const SizedBox(width: 5.0),
-                    const Text('100 views',
-                        style: TextStyle(
-                            color: Colors.black, fontFamily: 'Proxima')),
-                    const SizedBox(width: 15.0),
-                    const Icon(Icons.date_range,
-                        size: 16.0, color: Colors.black),
-                    const SizedBox(width: 5.0),
-                    const Text('Dec 25, 2023',
-                        style: TextStyle(
-                            color: Colors.black, fontFamily: 'Proxima')),
-                    const Spacer(),
+                    Row(
+                      children: [
+                        const Icon(Icons.remove_red_eye, size: 16.0, color: Colors.black),
+                        const SizedBox(width: 5.0),
+                        Text('100 views', style: TextStyle(color: Colors.black, fontFamily: 'Proxima Nova')),
+                        const SizedBox(width: 15.0),
+                        const Icon(Icons.date_range, size: 16.0, color: Colors.black),
+                        const SizedBox(width: 5.0),
+                        Text(getFormattedDate(widget.newsTile.timestamp),
+                            style: TextStyle(color: Colors.black, fontFamily: 'Proxima Nova')),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Adjusted alignment
+                  children: [
+                    Flexible(
+                      child: Text(
+                        widget.newsTile.publisher,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontFamily: 'Proxima Nova',
+                        ),
+                      ),
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -128,24 +149,8 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                           fontSize: 12,
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                          fontFamily: 'Proxima',
+                          fontFamily: 'Proxima Nova',
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.newsTile.publisher,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontFamily: 'Proxima',
                       ),
                     ),
                   ],
@@ -155,7 +160,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   widget.newsTile.description,
-                  style: const TextStyle(fontSize: 16.0, fontFamily: 'Proxima'),
+                  style: const TextStyle(fontSize: 16.0, fontFamily: 'Proxima Nova'),
                 ),
               ),
               const SizedBox(height: 25.0),

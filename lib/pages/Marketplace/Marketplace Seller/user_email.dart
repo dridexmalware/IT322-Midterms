@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lawod/components/bottomnav.dart';
-import 'package:lawod/components/userprovider.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_info.dart';
-import 'package:lawod/pages/Marketplace/marketplace.dart';
-import 'package:provider/provider.dart';
+
+import '../marketplace.dart';
 
 class UserEmail extends StatefulWidget {
-  const UserEmail({super.key});
+  const UserEmail({Key? key});
 
   @override
   State<UserEmail> createState() => _UserEmail();
@@ -55,12 +54,14 @@ class _UserEmail extends State<UserEmail> {
                   style: TextStyle(fontSize: 20, color: Color(0xFF4F4F4F)),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  context.watch<UserProvider>().email,
+                // Remove UserProvider usage here
+                const Text(
+                  'user_email@example.com', // Replace with your email retrieval logic
                   style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF196DFF)),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF196DFF),
+                  ),
                 ),
                 const SizedBox(height: 64),
                 TextFormField(
@@ -94,18 +95,17 @@ class _UserEmail extends State<UserEmail> {
                       ),
                     ),
                     onPressed: () {
-                      context.read<UserProvider>().changeEmail(
-                          newEmail: newEmailController.text);
+                      // Remove UserProvider usage here
+                      // Your logic for changing email goes here
                       FocusManager.instance.primaryFocus?.unfocus();
                       newEmailController.clear();
-                      context.read<UserProvider>().changeEmail(
-                          newEmail: confirmEmailController.text);
                       FocusManager.instance.primaryFocus?.unfocus();
                       confirmEmailController.clear();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const UserInfo()),
+                          builder: (context) => const UserInfo(),
+                        ),
                       );
                     },
                     child: const Padding(
@@ -123,14 +123,20 @@ class _UserEmail extends State<UserEmail> {
         currentIndex: _currentIndex,
         onTap: (index) {
           if (index == 0) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Community()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Community()),
+            );
           } else if (index == 1) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MarketPlace()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MarketPlace()),
+            );
           } else if (index == 2) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const UserAccount()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const UserAccount()),
+            );
           }
         },
       ),

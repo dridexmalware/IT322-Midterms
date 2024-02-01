@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lawod/components/bottomnav.dart';
-import 'package:lawod/main.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_info.dart';
@@ -17,47 +16,6 @@ class _UserPassword extends State<UserPassword> {
   final newUserPasswordController = TextEditingController();
   final confirmUserPasswordController = TextEditingController();
   final int _currentIndex = 1;
-
-  Map<String, dynamic>? userData;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchUserData();
-  }
-
-  Future<void> fetchUserData() async {
-    final user = supabase.auth.currentUser;
-
-    if (user != null) {
-      final response = await supabase
-          .from('useracc')
-          .select()
-          .eq('email', user.email as Object)
-          .single();
-
-      // ignore: unnecessary_null_comparison
-      if (response != null && response != null) {
-        setState(() {
-          userData = response;
-        });
-        // ignore: avoid_print
-        print('User Data: $userData');
-      }
-    }
-  }
-
-  Future<void> updateUserData(String newUserPassword) async {
-    final user = supabase.auth.currentUser;
-
-    if (user != null) {
-      await supabase
-          .from('useracc')
-          .update({'password': newUserPassword})
-          .eq('email', user.email as Object)
-          .single();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +53,10 @@ class _UserPassword extends State<UserPassword> {
                   style: TextStyle(fontSize: 20, color: Color(0xFF4F4F4F)),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  userData?['password'] ?? 'N/A',
-                  style: const TextStyle(
+                // Placeholder for user password, replace as needed
+                const Text(
+                  'User Password',
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF196DFF),
@@ -142,7 +101,7 @@ class _UserPassword extends State<UserPassword> {
                         return;
                       }
 
-                      updateUserData(newUserPassword);
+                      // TODO: Implement logic for saving changes without Supabase
 
                       Navigator.push(
                         context,
