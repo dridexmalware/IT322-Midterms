@@ -18,7 +18,7 @@ class FisherfolkLanding extends StatefulWidget {
 
   Future<Map<String, dynamic>> getFisherfolkAccountData(String userId) async {
     final DocumentSnapshot<Map<String, dynamic>> userDoc =
-    await FirebaseFirestore.instance.collection('users').doc(userId).get();
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
     return userDoc.data() ?? {};
   }
@@ -34,7 +34,6 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
   @override
   void initState() {
     super.initState();
-    // Fetch Fisherfolk account data here
     fetchFisherfolkData();
   }
 
@@ -42,17 +41,31 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        Map<String, dynamic> fisherfolkData =
-        await widget.getFisherfolkAccountData(user.uid);
+        final DocumentSnapshot fisherfolkDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('accounts')
+            .doc('fisherfolk')
+            .get();
 
-        setState(() {
-          userName = fisherfolkData['storeName'] ?? '';
-          storeLocation = fisherfolkData['storeLocation'] ?? '';
-        });
-
-        // Check if fisherfolkData is empty or null
-        if (userName.isEmpty || storeLocation.isEmpty) {
-          // Navigate to registration page
+        if (fisherfolkDoc.exists &&
+            fisherfolkDoc.data() is Map<String, dynamic>) {
+          Map<String, dynamic> fisherfolkData =
+              fisherfolkDoc.data() as Map<String, dynamic>;
+          if (fisherfolkData['storeName'] != null &&
+              fisherfolkData['storeLocation'] != null) {
+            setState(() {
+              userName = fisherfolkData['storeName'];
+              storeLocation = fisherfolkData['storeLocation'];
+            });
+          } else {
+            // If there's no storeName or storeLocation, then we must fill it in
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => FisherfolkRegistration()),
+            );
+          }
+        } else {
+          // If the document doesn't exist, we need to create it
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => FisherfolkRegistration()),
           );
@@ -247,7 +260,7 @@ class _FisherfolkLandingState extends State<FisherfolkLanding> {
                         elevation: 4,
                         // Shadow elevation
                         shadowColor:
-                        Colors.grey.withOpacity(0.5), // Shadow color
+                            Colors.grey.withOpacity(0.5), // Shadow color
                       ),
                       child: const Text(
                         'Sell Now',

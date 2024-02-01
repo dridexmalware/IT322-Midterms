@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lawod/components/textfield.dart';
 import 'package:lawod/pages/login_page.dart';
 
-
 class SignUpPage extends StatelessWidget {
   SignUpPage({super.key});
 
@@ -105,7 +104,7 @@ class SignUpPage extends StatelessWidget {
                   onPressed: () async {
                     try {
                       UserCredential userCredential =
-                      await _auth.createUserWithEmailAndPassword(
+                          await _auth.createUserWithEmailAndPassword(
                         email: emailController.text,
                         password: passwordController.text,
                       );
@@ -122,31 +121,6 @@ class SignUpPage extends StatelessWidget {
                         'phone_number': phoneNumberController.text,
                         'username': usernameController.text,
                       });
-
-                      // Check user type and create corresponding account document
-                      await _firestore
-                          .collection('users')
-                          .doc(userCredential.user?.uid)
-                          .collection('accounts')
-                          .doc('fisherfolk')
-                          .set({
-                        'fishermanId': '',
-                        'boatId': '',
-                        'storeName': '',
-                        'storeLocation': '',
-                      });
-
-                      await _firestore
-                          .collection('users')
-                          .doc(userCredential.user?.uid)
-                          .collection('accounts')
-                          .doc('consumer')
-                          .set({
-                        'address': '',
-                        'validId': '',
-                        'IDNumber': '',
-                      });
-
 
                       Navigator.pushReplacement(
                         context,

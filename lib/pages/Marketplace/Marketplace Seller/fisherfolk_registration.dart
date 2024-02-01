@@ -15,45 +15,72 @@ class FisherfolkRegistration extends StatelessWidget {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference usersCollection =
-  FirebaseFirestore.instance.collection('users');
+      FirebaseFirestore.instance.collection('users');
   final CollectionReference fisherfolkCollection =
-  FirebaseFirestore.instance.collection('fisherfolks');
+      FirebaseFirestore.instance.collection('fisherfolks');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> _createFisherfolkAccount(BuildContext context) async {
-    try {
-      User? currentUser = _auth.currentUser;
+  // Helper method to check if the user has a fisherfolk account
+  Future<bool> _userHasCompletedFisherfolkRegistration(String uid) async {
+    final fisherfolkAccountDoc = await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('accounts')
+        .doc('fisherfolk')
+        .get();
 
-      if (currentUser != null) {
-        String uid = currentUser.uid;
-
-        // Update the fisherfolk account data
-        await usersCollection
-            .doc(uid)
-            .collection('accounts')
-            .doc('fisherfolk_account')
-            .set({
-          'uid': uid,
-          'accountType': 'fisherfolk', // Add this line to store the account type
-          'fishermanId': fishermanIdController.text,
-          'boatId': boatIdController.text,
-          'storeName': storeNameController.text,
-          'storeLocation': storeLocationController.text,
-        });
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const FisherfolkLanding(),
-          ),
-        );
-      } else {
-        print('User not authenticated');
-      }
-    } catch (error) {
-      print('Error creating Fisherfolk account: $error');
+    if (fisherfolkAccountDoc.exists && fisherfolkAccountDoc.data() != null) {
+      final data = fisherfolkAccountDoc.data()!;
+      return data['registrationComplete'] ==
+          true; // Check if registration is complete
     }
+    return false; // No fisherfolk account document found, or registration not complete
   }
 
+  Future<void> _createFisherfolkAccount(BuildContext context) async {
+    User? currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      print('User not authenticated, handle accordingly.');
+      // TODO: Navigate to login page or show an error message
+      return;
+    }
+
+    final uid = currentUser.uid;
+    final hasCompletedRegistration =
+        await _userHasCompletedFisherfolkRegistration(uid);
+
+    if (hasCompletedRegistration) {
+      print(
+          'User already has a fisherfolk account, navigating to FisherfolkLanding.');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const FisherfolkLanding()),
+      );
+      return;
+    }
+
+    print('Creating a new fisherfolk account.');
+    await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('accounts')
+        .doc('fisherfolk')
+        .set({
+      'uid': uid,
+      'accountType': 'fisherfolk',
+      'fishermanId': fishermanIdController.text,
+      'boatId': boatIdController.text,
+      'storeName': storeNameController.text,
+      'storeLocation': storeLocationController.text,
+      'registrationComplete': true, // Set the registration as complete.
+    }, SetOptions(merge: true));
+
+    print('Account created, navigating to FisherfolkLanding.');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const FisherfolkLanding()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

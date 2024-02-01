@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/fisherfolk_page.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/fisherfolk_registration.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20User/categories.dart';
+import 'package:lawod/pages/Marketplace/Marketplace%20User/consumeraccount.dart';
 import '../../components/button_fill.dart';
 import '../../components/button_line.dart';
 import '../homescreen_page.dart';
@@ -17,60 +19,64 @@ class MarketPlace extends StatefulWidget {
 class _MarketPlaceState extends State<MarketPlace> {
   late String returnedData = '';
 
-  Future<void> _navigateToCorrectScreen(String s) async {
+  Future<void> _navigateToCorrectScreen(String accountType) async {
     User? user = FirebaseAuth.instance.currentUser;
-    print(user);
-    if (user != null) {
-      try {
-        // Check if consumer account exists
-        DocumentSnapshot<Map<String, dynamic>> consumerSnapshot =
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .collection('accounts')
-            .doc('consumer_account')
-            .get();
+    if (user == null) {
+      // User is not logged in, so you might want to navigate to the login page.
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      return;
+    }
 
-        // Check if fisherfolk account exists
-        DocumentSnapshot<Map<String, dynamic>> fisherfolkSnapshot =
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .collection('accounts')
-            .doc('fisherfolk_account')
-            .get();
+    final uid = user.uid;
+    try {
+      // Check for the consumer account
+      DocumentSnapshot consumerAccountSnapshot = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(uid)
+          .collection('accounts')
+          .doc('consumer')
+          .get();
 
-        if (consumerSnapshot.exists || fisherfolkSnapshot.exists) {
-          // Redirect to landing page if either account exists
+      // Check for the fisherfolk account
+      DocumentSnapshot fisherfolkAccountSnapshot = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(uid)
+          .collection('accounts')
+          .doc('fisherfolk')
+          .get();
+
+      // If accountType is 'fisherfolk' and the account exists, go to FisherfolkLanding, else go to FisherfolkRegistration
+      if (accountType == 'fisherfolk') {
+        if (fisherfolkAccountSnapshot.exists) {
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FisherfolkLanding(),
-            ),
-          );
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const FisherfolkLanding()));
         } else {
-          // Navigate to registration page if no account exists
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FisherfolkRegistration(),
-            ),
-          );
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FisherfolkRegistration()));
         }
-      } catch (error) {
-        print('Error checking user accounts: $error');
       }
-    } else {
-      // Handle authentication flow if no user is logged in
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const MarketPlace()),
-      );
+      // If accountType is 'consumer' and the account exists, go to Categories, else go to ConsumerAccount for registration
+      else if (accountType == 'consumer') {
+        if (consumerAccountSnapshot.exists) {
+          // Replace 'CategoriesPage' with the actual page you want to navigate to.
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Categories()));
+        } else {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ConsumerAccount()));
+        }
+      }
+    } catch (error) {
+      print('Error checking user accounts: $error');
+      // Handle the error appropriately
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +126,7 @@ class _MarketPlaceState extends State<MarketPlace> {
                     ),
                   ),
                   width: MediaQuery.of(context).size.width,
-                      child: Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -201,4 +207,3 @@ class _MarketPlaceState extends State<MarketPlace> {
     );
   }
 }
-
