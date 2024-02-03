@@ -3,7 +3,7 @@ import 'package:lawod/components/bottomnav.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
 import 'package:lawod/pages/Marketplace/marketplace.dart';
-import '../../../components/shared_datamanager.dart';
+
 import 'Categories/fish.dart';
 
 class Categories extends StatefulWidget {
@@ -98,9 +98,8 @@ class _CategoriesState extends State<Categories> {
           mainAxisSpacing: 8,
           childAspectRatio: 1 / 1.2,
         ),
-        itemCount: SharedDataManager.productList.length,
+        itemCount: products.length,
         itemBuilder: (context, index) {
-          // Use SharedDataManager.productList[index] for each product
           return GestureDetector(
             onTap: () {
               if (products[index]['productName'] == 'Fish') {
@@ -128,7 +127,7 @@ class _CategoriesState extends State<Categories> {
                 children: <Widget>[
                   Padding(
                     padding:
-                        const EdgeInsets.only(left: 16, top: 10, right: 16),
+                    const EdgeInsets.only(left: 16, top: 10, right: 16),
                     child: Container(
                       decoration: BoxDecoration(
                         color: const Color.fromRGBO(224, 236, 248, 1),
@@ -147,7 +146,7 @@ class _CategoriesState extends State<Categories> {
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(left: 16, top: 12, right: 16),
+                    const EdgeInsets.only(left: 16, top: 12, right: 16),
                     child: Container(
                       height: 120,
                       decoration: BoxDecoration(
