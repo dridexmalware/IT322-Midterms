@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:lawod/components/bottomnav.dart';
 import 'package:lawod/pages/Community%20Support/community.dart';
 import 'package:lawod/pages/Marketplace/Marketplace%20Seller/user_account.dart';
-// import 'package:lawod/pages/Marketplace/Marketplace%20User/fish.dart';
 import 'package:lawod/pages/Marketplace/marketplace.dart';
-
 import '../../../components/shared_datamanager.dart';
+import 'Categories/fish.dart';
 
 class Categories extends StatefulWidget {
   const Categories({super.key});
@@ -104,12 +103,12 @@ class _CategoriesState extends State<Categories> {
           // Use SharedDataManager.productList[index] for each product
           return GestureDetector(
             onTap: () {
-              // if (products[index]['productName'] == 'Fish') {
-              //   Navigator.push(
-              //     context,
-              //     // MaterialPageRoute(builder: (context) => const Fish()),
-              //   );
-              // }
+              if (products[index]['productName'] == 'Fish') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Fish()),
+                );
+              }
             },
             child: Container(
               decoration: BoxDecoration(
