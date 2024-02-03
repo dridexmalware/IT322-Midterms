@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 class Item extends StatefulWidget {
   final String productId;
 
-  const Item({Key? key, required this.productId, required Map<String, dynamic> productData}) : super(key: key);
+  const Item(
+      {Key? key,
+      required this.productId,
+      required Map<String, dynamic> productData})
+      : super(key: key);
 
   @override
   State<Item> createState() => _ItemState();
@@ -35,9 +39,9 @@ class _ItemState extends State<Item> {
       if (productSnapshot.exists) {
         setState(() {
           orderDetails = {
-            'images': [productSnapshot['imageUrl']],
-            'productName': productSnapshot['productName'],
-            'productPrice': productSnapshot['productPrice'],
+            'images': [productSnapshot['imageUrl'] ?? ''],
+            'productName': productSnapshot['productName'] ?? '',
+            'productPrice': productSnapshot['productPrice'] ?? '',
           };
         });
       } else {
@@ -139,7 +143,7 @@ class RatingStars extends StatelessWidget {
     return Row(
       children: List.generate(
         5,
-            (index) => GestureDetector(
+        (index) => GestureDetector(
           onTap: () {
             onRatingChanged(index + 1);
           },
