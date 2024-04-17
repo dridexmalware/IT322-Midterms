@@ -20,7 +20,8 @@ class LawodButtonFill extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         fixedSize: const Size(
-          332, 60,
+          332,
+          60,
         ),
       ),
       child: DefaultTextStyle(

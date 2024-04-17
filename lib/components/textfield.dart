@@ -48,13 +48,12 @@ class LawodTextField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.auto,
         ),
         style: const TextStyle(
-            fontSize: 18,
-            fontFamily: 'Proxima Nova',
-            fontWeight: FontWeight.w400,
-            color: Colors.black,
+          fontSize: 18,
+          fontFamily: 'Proxima Nova',
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
         ),
       ),
     );
   }
 }
-

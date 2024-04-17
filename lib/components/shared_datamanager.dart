@@ -4,6 +4,6 @@ class SharedDataManager {
     productList.add(productData);
     notifyListeners();
   }
-  static void notifyListeners() {
-  }
+
+  static void notifyListeners() {}
 }

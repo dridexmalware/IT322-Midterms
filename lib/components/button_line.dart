@@ -23,7 +23,8 @@ class LawodButtonLine extends StatelessWidget {
           ),
         ),
         fixedSize: const Size(
-          332, 60,
+          332,
+          60,
         ),
       ),
       child: DefaultTextStyle(

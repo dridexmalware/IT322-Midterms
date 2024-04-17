@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'weather_service.dart';  // Make sure to import your WeatherService class
+import 'weather_service.dart'; // Make sure to import your WeatherService class
 import 'weather_model.dart';
 
 class WeatherWidget extends StatefulWidget {
@@ -53,7 +53,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           constraints: BoxConstraints(maxHeight: containerMaxHeight),
           margin: const EdgeInsets.symmetric(horizontal: 18.0),
           child: AspectRatio(
-            aspectRatio: 360 / 184,  // Adjust this value as needed
+            aspectRatio: 360 / 184, // Adjust this value as needed
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: Container(
