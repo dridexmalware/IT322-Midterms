@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'pages/authentication_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const Lawod());
 }
 

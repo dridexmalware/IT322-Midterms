@@ -8,7 +8,12 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SnappingList(),
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 1100), // Adjust this value as needed
+            child: SnappingList(),
+          ),
+        ),
       ),
     );
   }
